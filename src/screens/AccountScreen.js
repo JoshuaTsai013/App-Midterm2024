@@ -6,7 +6,7 @@ const AccountScreen = () => {
     return (
     <View style={{flex: 1}}>
         <Text fontSize={30}>
-            This is a AccountScreen
+            This is a AccoScreen
         </Text>              
     </View>
     );

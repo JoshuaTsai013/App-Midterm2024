@@ -136,12 +136,9 @@ const MyTabs = () => {
                 component={WishListScreen}
                 options={{
                     title: "Wishlist",
-                    headerTitleStyle: {
-                        fontWeight: '400',
-                        fontSize: 20
-                    },
+                    headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="bookmark" color={color} size={26} />
+                        <MaterialCommunityIcons name="map" color={color} size={26} />
                     ),
                 }}
             />

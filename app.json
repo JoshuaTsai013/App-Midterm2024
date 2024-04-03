@@ -26,6 +26,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow EV Station App to use your location."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "8d7a8383-e121-45cd-afa6-f3f72aa74bb9"

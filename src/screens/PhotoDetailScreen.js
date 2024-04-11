@@ -6,7 +6,7 @@ import { View, StyleSheet, Image, ScrollView, Animated, Dimensions, Platform } f
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function AccountScreen({ navigation, route }) {
+export default function PhotoDetailScreen({ navigation, route }) {
    const { item } = route.params;
    return (
       <SafeAreaView style={{ flex: 1}}>

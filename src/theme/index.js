@@ -4,10 +4,12 @@ const MyTheme = {
    ...DefaultTheme,
    colors: {
      ...DefaultTheme.colors,
-     light400: '#a8a29e',
-     primary700: '#0e7490',
-     purple:'#466A47',
-     white:'#fff'
+     darkGray:'#696969',
+     lightGray:'#EAEAEA',
+     darkGreen:'#466A47',
+     lightGreen:'#85B387',
+     white:'#fff',
+     black:'#131313'
    },
  };
 

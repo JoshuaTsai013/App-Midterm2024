@@ -8,8 +8,7 @@ import { Marker } from 'react-native-maps';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAP_API_KEY } from "../Api";
-import MemoryPlace from "../json/MemoryPlace.json"
-import { markers } from "../components/test"
+import { data } from "../components/Data"
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
 
 const { width, height } = Dimensions.get("window");
@@ -17,7 +16,7 @@ const CARD_HEIGHT = 180;
 const CARD_WIDTH = width * 0.9;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
-const WishListScreen = () => {
+const MapScreen = () => {
 
     const { location, setLocation } = useContext(UserLocation);
     const [selectedLocation, setSelectedLocation] = useState(null); // 新增 selectedLocation 狀態來存儲選擇的位置
@@ -38,8 +37,8 @@ const WishListScreen = () => {
     useEffect(() => {
         mapAnimation.addListener(({ value }) => {
             let index = Math.floor(value / CARD_WIDTH + 0.3);
-            if (index >= markers.length) {
-                index = markers.length - 1;
+            if (index >= data.length) {
+                index = data.length - 1;
             }
             if (index <= 0) {
                 index = 0;
@@ -49,7 +48,7 @@ const WishListScreen = () => {
             const regionTimeout = setTimeout(() => {
                 if (mapIndex !== index) {
                     mapIndex = index;
-                    const { coordinate } = markers[index];
+                    const { coordinate } = data[index];
                     mapRef.current.animateToRegion(
                         {
                             ...coordinate,
@@ -81,7 +80,7 @@ const WishListScreen = () => {
         else
             setZoomRatio(1);
     }
-    const interpolations = markers.map((marker, index) => {
+    const interpolations = data.map((marker, index) => {
         const inputRange = [
             (index - 1) * CARD_WIDTH,
             index * CARD_WIDTH,
@@ -154,7 +153,7 @@ const WishListScreen = () => {
                     latitudeDelta: region.latitudeDelta,
                     longitudeDelta: region.longitudeDelta
                 }}>
-                {(zoomRatio > 0.14) && markers.map((marker, index) => {
+                {(zoomRatio > 0.14) && data.map((marker, index) => {
                     console.log(index);
                     const scaleStyle = {
                         transform: [
@@ -230,7 +229,7 @@ const WishListScreen = () => {
                     { useNativeDriver: true }
                 )}
             >
-                {markers.map((marker, index) => (
+                {data.map((marker, index) => (
                     <HStack alignItems='center' style={styles.card} key={index}>
                         <VStack gap={5} style={styles.textContent}>
                             <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
@@ -241,7 +240,7 @@ const WishListScreen = () => {
                             </HStack>
                         </VStack>
                         <Image
-                            source={marker.image}
+                            source={marker.data2.day1.image}
                             style={styles.cardImage}
                             resizeMode="cover"
                         />
@@ -317,4 +316,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WishListScreen;
+export default MapScreen;

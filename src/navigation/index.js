@@ -14,10 +14,9 @@ import { Divider, Center, Image, Box, Text, Pressable } from '@gluestack-ui/them
 
 import HomeScreen from '../screens/HomeScreen';
 import DetailScreen from '../screens/DetailScreen';
-import WishListScreen from '../screens/WishListScreen';
-import MyBookScreen from '../screens/MyBookScreen'
+import MapScreen from '../screens/MapScreen'
 import SettingScreen from '../screens/SettingScreen';
-import AccountScreen from '../screens/AccountScreen'
+import PhotoDetailScreen from '../screens/PhotoDetailScreen'
 import MyTheme from '../theme';
 
 const Stack = createNativeStackNavigator();
@@ -39,21 +38,11 @@ const CustomDrawerContent = (props) => {
         >
             <Box h={180} justifyContent='center'>
                 <Center pt={50} pr={150}>
-                    <Image
-                        h={48}
-                        w={48}
-                        borderRadius={999}
-                        mb={10}
-                        source={{
-                            uri: 'https://s3-alpha-sig.figma.com/img/a14c/921b/dcea36fbb59ee6c44fdec352c284fb5b?Expires=1712534400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=AyaCYlh27eIYoF-2guDSrpqgnRLhWWxiDkXCz-VX5him7p~wdXuPxHXmtBs1dRFJdjagDxhdIyQlEXhiNk5MDGAisqZTEbT7cQboGeCAICLwZDbAboBQ06jHmPZSQ-DVQ3YNPWzZIkZgf2JsXxTZwD0TiskicoZeoIz~Vtg1INdOk-hJtuwSjJB-YcJQ0R2PIhpUZn4Jy-GMMQ3KkIk3ympb0RJpOxRYSDGQ3rwg9SQSwkqVwaHiOdXVTHfCsjp6WcEPpA8DF8ZkhV0sNWs-GNO-7C7PsCh74N0n7QN52hUhKllidmSTyxdJSIq~aZWcRcGczUud0mANI9CqkF58lw__'
-                        }}
-                        alt='albumImage'
-                    />
                     <Text fontWeight='500'
                         color='#131313'
                         fontSize={24}
                         lineHeight={28}
-                    >May</Text>
+                    >My journeys</Text>
                 </Center>
             </Box>
             <Divider my="$2" />
@@ -88,17 +77,6 @@ const MyDrawer = () => {
                 }}
             />
             <Drawer.Screen
-                name="Account"
-                component={AccountStack}
-                options={{
-                    headerShown: false,
-                    drawerLabel: "Account",
-                    drawerIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="account-circle" color={color} size={26} />
-                    ),
-                }}
-            />
-            <Drawer.Screen
                 name="Setting"
                 component={SettingsStack}
                 options={{
@@ -118,7 +96,7 @@ const MyTabs = () => {
         <Tab.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                tabBarActiveTintColor: colors.purple,
+                tabBarActiveTintColor: colors.darkGreen,
                 tabBarStyle: {
                     position: 'absolute',
                     bottom: -20,
@@ -153,8 +131,8 @@ const MyTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="wishlist"
-                component={WishListStack}
+                name="PhotoDetailStack"
+                component={PhotoDetailStack}
                 options={{
                     title: '',
                     headerShown: false,
@@ -167,8 +145,8 @@ const MyTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="MyBook"
-                component={MyBookScreen}
+                name="MapScreen"
+                component={MapScreen}
                 options={{
                     title: '',
                     tabBarIconStyle: {
@@ -219,23 +197,23 @@ const SettingsStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-const WishListStack = ({ navigation }) => {
+const PhotoDetailStack = ({ navigation }) => {
     return (
         <Stack.Navigator
             screenOptions={{
                 animation:'none', // 或者 'none'
             }}>
             <Stack.Screen
-                name="WishListScreen"
-                component={WishListScreen}
+                name="DetailScreen"
+                component={DetailScreen}
                 options={{
                     title: null,
                     headerShadowVisible: false,
                 }}
             />
             <Stack.Screen
-                name="AccountScreen"
-                component={AccountScreen}
+                name="PhotoDetailScreen"
+                component={PhotoDetailScreen}
                 options={{
                     title: null,
                     headerShadowVisible: false,
@@ -288,31 +266,6 @@ const HomeStack = ({ navigation }) => {
                                 <MaterialCommunityIcons name='bookmark-outline' color='#131313' size={26} /> :
                                 <MaterialCommunityIcons name='bookmark' color='#6200EE' size={26} />}
                         </Pressable>
-                    ),
-                }}
-            />
-        </Stack.Navigator>
-    );
-}
-const AccountStack = ({ navigation }) => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="AccountScreen"
-                component={AccountScreen}
-                options={{
-                    title: "Account",
-                    headerTitleStyle: {
-                        fontWeight: '400',
-                        fontSize: 20
-                    },
-                    headerLeft: () => (
-                        <MaterialCommunityIcons
-                            name={'menu'}
-                            size={20}
-                            onPress={() => navigation.openDrawer()}
-                            style={{ marginRight: 20 }}
-                        />
                     ),
                 }}
             />

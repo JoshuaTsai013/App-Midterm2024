@@ -1,82 +1,91 @@
-import React from 'react';
-import { Linking, Image } from 'react-native';
-import StarList from '../components/StarList'
-import { HStack, Center, ScrollView, Box, Text, Pressable } from "@gluestack-ui/themed";
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, Image, ScrollView, Animated, Dimensions, Platform } from 'react-native';
+import { HStack, Center, Box, Text, Pressable } from "@gluestack-ui/themed";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { data, tabs } from '../components/Data'
+import { FlatList, SectionList } from "react-native";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const DetailScreen = ({ route }) => {
-    const { title,
-        artist,
-        star,
-        url,
-        image,
-        description
-    } = route.params;
-    const buttontitle = `Buy Now for $${star}`
+
+const DetailScreen = ({ navigation }) => {
+    const scrollX=useRef(new Animated.Value(0)).current;
     return (
-        <Center height="100%">
-            <ScrollView bgColor='#fff' w='100%' h='100%'>
-                <Center style={{}}>
-                    <Box mt="$5" style={{}}>
-                        <Image
-                            style={{
-                                height: 300,
-                                width: 210
-                            }}
-                            source={{
-                                uri: image
-                            }}
-                        />
-                    </Box>
-                    <Center mt="$5" style={{}}>
-                        <Text color='#131313'
-                            textAlign='center'
-                            fontSize={24}
-                            lineHeight={28}
-                        >{title}</Text>
-                        <Text color='#666666'
-                            textAlign='center'
-                            fontSize={14}
-                            fontWeight='400'
-                            lineHeight={16}
-                            mt={10}
-                        >{artist}</Text>
-                        <HStack mt={20}>
-                            <StarList star={star} size={20} />
-                            <Text fontSize={14}
-                                fontWeight='400'
-                                letterSpacing={1}
-                                pt={2}
-                                pl={5}
-                            >{star}.0/5.0</Text>
-                        </HStack>
-                        <Text mt={20}
-                            color='#131313'
-                            textAlign='center'
-                            fontSize={14}
-                            fontWeight='400'
-                            lineHeight={24}
-                        >{description}</Text>
-                    </Center>
-                    <Pressable mt={20}
-                        justifyContent="center"
-                        w={190}
-                        h={36}
-                        borderRadius={4}
-                        backgroundColor="#6200EE"
-                        onPress={() => Linking.openURL(url)}
-                    >
-                        <Text
-                            color="#fff"
-                            textAlign='center'
-                            fontSize={14}
-                            fontWeight='700'
-                            lineHeight={16}
-                            letterSpacing={1.2}
-                        >{buttontitle}</Text>
-                    </Pressable>
-                </Center>
-            </ScrollView>
-        </Center>
-    );
+        <ScrollView>
+            <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={data}
+                snapToInterval={450}
+                // snapToAlignment="center"
+                decelerationRate='fast'
+                keyExtractor={(item, index) => `${item}-${index}`}
+                // onScroll={Animated.event(
+                //     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                //     { useNativeDriver: true }
+                // )}
+                renderItem={({ item ,index}) => {
+                    // const inputRange = [
+                    //     (index - 1) * 450,
+                    //     index * 450,
+                    //     (index + 1) * 450]
+                    // const scale = scrollX.interpolate({
+                    //     inputRange,
+                    //     outputRange: [1, 1.1, 1],
+                    // });
+                    return (
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate('PhotoDetailScreen', { item }); }}
+                            style={{ width: 450 }}
+                        >
+                            <Box style={[
+                                // StyleSheet.absoluteFillObject,
+                                // { overflow: 'hidden' }
+                            ]}>
+                                <Image source={item.image} style={styles.image}
+                                    // style={[StyleSheet.absoluteFillObject,
+                                    // {
+                                    //     resizeMode: 'cover',
+                                    //     width:450,
+                                    //     height:300,
+                                    //     transform: [{ scale }]
+                                    // }
+                                    // ]} 
+                                    />
+                                {/* <Box>
+                                        <Text style={styles.title}>{item.title}</Text>
+                                        <Text style={styles.location}>{item.location}</Text>
+                                    </Box> */}
+                            </Box>
+                        </TouchableOpacity>
+                    )
+                }
+                }
+            />
+        </ScrollView>
+    )
 }
+
+const styles = StyleSheet.create({
+    pill: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+    },
+    pillText: {},
+    title: {
+        fontWeight: '800',
+        fontSize: 22,
+
+    },
+    location: {
+        fontSize: 12,
+        opacity: 0.8,
+    },
+    image: {
+        width: '100%',
+        height: 300,
+
+    },
+})
+
 export default DetailScreen;

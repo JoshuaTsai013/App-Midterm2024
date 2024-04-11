@@ -5,7 +5,7 @@ export const region=[
                 latitudeDelta: 0.04864195044303443,
                 longitudeDelta: 0.040142817690068
             }];
-export const markers = [
+export const data = [
             {
                 coordinate: {
                     latitude: 25.072701,
@@ -14,7 +14,12 @@ export const markers = [
                 title: "登頂七星山",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/2.jpeg")
+                image:require("../../image/2.jpeg"),
+                data2:{
+                    day1:{
+                        image:require("../../image/2.jpeg"),
+                    }
+                }
             },
             {
                 coordinate: {
@@ -24,7 +29,12 @@ export const markers = [
                 title: "大湖公園",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/19.jpeg")
+                image:require("../../image/19.jpeg"),
+                data2:{
+                    day1:{
+                        image:[]
+                    }
+                }
             },
             {
                 coordinate: {
@@ -34,7 +44,12 @@ export const markers = [
                 title: "內湖",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/hi.jpeg")
+                image:require("../../image/hi.jpeg"),
+                data2:{
+                    day1:{
+                        image:require("../../image/2.jpeg"),
+                    }
+                }
             },
             {
                 coordinate: {
@@ -44,7 +59,12 @@ export const markers = [
                 title: "文德",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/8.jpeg")
+                image:require("../../image/8.jpeg"),
+                data2:{
+                    day1:{
+                        image:require("../../image/2.jpeg"),
+                    }
+                }
             },
             {
                 coordinate: {
@@ -54,7 +74,12 @@ export const markers = [
                 title: "港墘",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/2.jpeg")
+                image:require("../../image/2.jpeg"),
+                data2:{
+                    day1:{
+                        image:require("../../image/2.jpeg"),
+                    }
+                }
             },
             {
                 coordinate: {
@@ -64,9 +89,14 @@ export const markers = [
                 title: "西湖",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/19.jpeg")
+                image:require("../../image/19.jpeg"),
+                data2:{
+                    day1:{
+                        image:require("../../image/2.jpeg"),
+                    }
+                }
             }];
-export const data = [
+export const testdata = [
             {
                 id: 1,
                 title: "1111111",
@@ -109,13 +139,3 @@ export const data = [
                 location:"陽明山",
                 image:require("../../image/2.jpeg")
             }];
-export const tabs = [
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-];

@@ -7,11 +7,11 @@ const BookDetail = ({ book, navigation }) => {
 
   return (
     <VStack>
-      <Box p={10} mt={5}>
+      <Box p={10} mt={5} bg="$primary200" width="100%">
         <Pressable
           onPress={() => navigation.navigate('Detail', book)}
         >
-          <Image height={200} width={140}
+          <Image height={150} width={140}
             source={{
               uri: book.image
             }}

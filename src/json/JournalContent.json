@@ -1,0 +1,35 @@
+[
+    {
+        "title": "Fashionopolis",
+        "artist": "Dana Thomas",
+        "url": "https://www.youtube.com/watch?v=2Vv-BfVoq4g",
+        "image": "https://s3-alpha-sig.figma.com/img/8098/894d/9cc9f0e42326b7024eeac18ad09f3c8e?Expires=1711929600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fNFVjZRalARNC4eKRnq4yTcCVP9~bKUbjfGvt5Ocz3YhHFdUW9EQ1krCNlYjq1JsYMFCM4o~1eVCki-gAt1wcDfdVxsXnmp0KXwbNfCVMUT4mDCyDe3TOs9ZwfjumSsPjgPx5czmH9yvQDmZxC99nc4Y~OBfeWSf6uWd4B8Sf3rVxo68BkuCjJ7MaKABhLoAORtyUsI1Daq0OCNURFMYHAmQ3xSkCYdH31yr5GKk0yOziFPnNrRYSapufWhOD4a~1WVrxuXrQl6Hr-sMF3O2zARP4Pd649Wl~-eLlN~FlX2m5U1hYP2DvBKR53EQU8Atj2HReSNYUgWWNJCL64JgWA__",
+        "thumbnail_image": "https://www.clashmusic.com/wp-content/uploads/2017/04/Clash103Web23.jpg",
+        "StarAppear": false,
+        "star": 5,
+        "description": "A spectacular visual journey through 40 years of\n haute couture from one of the best-known and\n most trend-setting brands in fashion.",
+        "price": "7.99"
+    },
+    {
+        "title": "Chanel",
+        "artist": "Patrick Mauriès",
+        "url": "https://www.youtube.com/watch?v=2Vv-BfVoq4g",
+        "image": "https://s3-alpha-sig.figma.com/img/5f46/02e2/8ad53ad8b0bfa50c9d279b4a3505fdf1?Expires=1711929600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Q-ltEDzy4YE7tTITFrNCXSVDMMX6183lO5B1w1gXMmXmiLbsLWl6phyoKaLh1I8p4sipdbdTtE5ILam~r3cjAHcTTMNxGWPcDgq682SWITAPdMmuLhrJ9JbPDQBZ39sMX7325bun98QQHrJfDZyj2yvAn7UvYO7jp91e5bUIylz3hKf0mxTiAqIa4sfuGLYAztMEm3QFZ6291JVc16kPC68foUySCEqOxzozLc9w2qn3DvfZOUmRf7ofzZ8Zv-XL3aOrCK1Wfs0-ErDlbnzQvoPOTmFaRvtH9i0RnmqwSWwI1H5iufw6Ip2FWxkKLYzZ05XY4uMCJIO3iDl-ZlncXw__",
+        "thumbnail_image": "https://www.clashmusic.com/wp-content/uploads/2017/04/Clash103Web23.jpg",
+        "StarAppear": false,
+        "star": 4,
+        "description": "A spectacular visual journey through 40 years of\n haute couture from one of the best-known and\n most trend-setting brands in fashion.",
+        "price": "7.99"
+    },
+    {
+        "title": "Calligraphy",
+        "artist": "June & Lucy",
+        "url": "https://www.youtube.com/watch?v=2Vv-BfVoq4g",
+        "image": "https://s3-alpha-sig.figma.com/img/fe9a/15a4/83200d80b67a4555c8b4a19b8073085e?Expires=1711929600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=E84L9jl1rwNxnCpf1WerBY~~CP8WOeGbvyd84ckBYRUEozGzUzzr~Hkvfan8ThOa-MRdmBVyrz9xZ8m61fcS5JumeXRKvCrwMBzMkaWqfQ13M7cJOFE4HP~iBCiTfUqUiacHI-FFZZxClMP~kQ1AB-IF57RYA-bEwBOJcjdoAdy5N7SftfaXCxxeqex~osoRlOBaNG317lsMPuw2ZWYOXo-gX~LZo3TRgVTwfGA8GE2M0fSRrFiYj4UPgRcTobfx23UK75CzfnFhuQMx-Q316TAPt0dRbc4epC8xUpRoDOi894LgxTS3aiA04T5hjZYpl0p~kNu-V8LDPjRJzv5MKw__",
+        "thumbnail_image": "https://www.clashmusic.com/wp-content/uploads/2017/04/Clash103Web23.jpg",
+        "StarAppear": false,
+        "star": 3,
+        "description": "A spectacular visual journey through 40 years of\n haute couture from one of the best-known and\n most trend-setting brands in fashion.",
+        "price": "7.99"
+    }
+]

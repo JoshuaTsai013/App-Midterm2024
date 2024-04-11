@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavigationContainer, useTheme} from '@react-navigation/native';
+import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@react-navigation/drawer';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Divider, Center, Image, Box, Text, Pressable } from '@gluestack-ui/themed';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -48,11 +49,11 @@ const CustomDrawerContent = (props) => {
                         }}
                         alt='albumImage'
                     />
-                    <Text fontWeight='500' 
-                          color='#131313' 
-                          fontSize={24} 
-                          lineHeight={28}
-                          >May</Text>
+                    <Text fontWeight='500'
+                        color='#131313'
+                        fontSize={24}
+                        lineHeight={28}
+                    >May</Text>
                 </Center>
             </Box>
             <Divider my="$2" />
@@ -68,7 +69,7 @@ const MyDrawer = () => {
         <Drawer.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                drawerActiveBackgroundColor:colors.purple,
+                drawerActiveBackgroundColor: colors.purple,
                 drawerActiveTintColor: colors.white,
                 drawerStyle: { width: 250 },
                 drawerLabelStyle: { fontSize: 14, fontWeight: '400', lineHeight: 16 },
@@ -117,28 +118,51 @@ const MyTabs = () => {
         <Tab.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                tabBarActiveTintColor:colors.purple,
+                tabBarActiveTintColor: colors.purple,
+                tabBarStyle: {
+                    position: 'absolute',
+                    bottom: -20,
+                    left: 0,
+                    right: 0,
+                    elevation: 0, // 避免底部陰影
+                    backgroundColor: 'white', // 背景顏色
+                    borderTopWidth: 1, // 移除頂部邊框線
+                    height: 90, // Tab Bar 的高度
+                },
+                tabBarItemStyle: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 10,
+                },
             }}
+
         >
             <Tab.Screen
                 name="HomeStack"
                 component={HomeStack}
                 options={{
                     headerShown: false,
-                    title: "Home",
+                    title: '',
+                    tabBarIconStyle: {
+                        marginLeft: 60,
+                    },
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="home" color={color} size={26} />
+                        <MaterialCommunityIcons name="home" color={color} size={30} />
                     ),
                 }}
             />
             <Tab.Screen
                 name="wishlist"
-                component={WishListScreen}
+                component={WishListStack}
                 options={{
-                    title: "Wishlist",
+                    title: '',
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="map" color={color} size={26} />
+                        <Box >
+                            <Ionicons position='absolute' zIndex={10} bottom={-10} left={-35} name="add-circle-sharp" color='#466A47' size={70} style={{ marginTop: -55 }} />
+                            <Box w={50} h={50} position='absolute' zIndex={0} borderRadius={50} bottom={-10} left={-35} backgroundColor='#fff' />
+                        </Box>
                     ),
                 }}
             />
@@ -146,13 +170,13 @@ const MyTabs = () => {
                 name="MyBook"
                 component={MyBookScreen}
                 options={{
-                    title: "My Books",
-                    headerTitleStyle: {
-                        fontWeight: '400',
-                        fontSize: 20
+                    title: '',
+                    tabBarIconStyle: {
+                        marginRight: 60,
                     },
+                    headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="book-open" color={color} size={26} />
+                        <MaterialCommunityIcons name="book-open" color={color} size={30} />
                     ),
                 }}
             />
@@ -190,6 +214,31 @@ const SettingsStack = ({ navigation }) => {
                         fontWeight: '400',
                         fontSize: 20
                     },
+                }}
+            />
+        </Stack.Navigator>
+    );
+}
+const WishListStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                animation:'none', // 或者 'none'
+            }}>
+            <Stack.Screen
+                name="WishListScreen"
+                component={WishListScreen}
+                options={{
+                    title: null,
+                    headerShadowVisible: false,
+                }}
+            />
+            <Stack.Screen
+                name="AccountScreen"
+                component={AccountScreen}
+                options={{
+                    title: null,
+                    headerShadowVisible: false,
                 }}
             />
         </Stack.Navigator>
@@ -235,9 +284,9 @@ const HomeStack = ({ navigation }) => {
                     headerTintColor: '#131313',
                     headerRight: () => (
                         <Pressable onPress={() => toggleFunction()}>
-                            {toggle ? 
-                            <MaterialCommunityIcons name='bookmark-outline' color='#131313' size={26} /> :
-                            <MaterialCommunityIcons name='bookmark' color='#6200EE' size={26} />}
+                            {toggle ?
+                                <MaterialCommunityIcons name='bookmark-outline' color='#131313' size={26} /> :
+                                <MaterialCommunityIcons name='bookmark' color='#6200EE' size={26} />}
                         </Pressable>
                     ),
                 }}

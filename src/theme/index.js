@@ -6,7 +6,7 @@ const MyTheme = {
      ...DefaultTheme.colors,
      light400: '#a8a29e',
      primary700: '#0e7490',
-     purple:'#6200EE',
+     purple:'#466A47',
      white:'#fff'
    },
  };

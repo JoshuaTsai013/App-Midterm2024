@@ -1,111 +1,91 @@
-import React, { useContext, useState,useRef } from 'react';
-import { View, StyleSheet,Image } from 'react-native';
-import { HStack, Center, ScrollView, Box, Text, Pressable } from "@gluestack-ui/themed";
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
-import MapViewStyle from '../json/MapViewStyle.json'
-import { UserLocation } from '../components/UserLocation'
-import { Marker } from 'react-native-maps';
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, Image, ScrollView, Animated, Dimensions, Platform } from 'react-native';
+import { HStack, Center, Box, Text, Pressable } from "@gluestack-ui/themed";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import SearchBar from '../components/SearchBar';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { GOOGLE_MAP_API_KEY } from "../Api";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { data, tabs } from '../components/test'
+import { FlatList, SectionList } from "react-native";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const WishListScreen = () => {
 
-    const { location, setLocation } = useContext(UserLocation);
-    const[placeList,setPlaceList]=useState([]);
-    const [selectedLocation, setSelectedLocation] = useState(null); // 新增 selectedLocation 狀態來存儲選擇的位置
-
-    const mapRef=useRef(null);
-
-    async function moveToLocation(latitude,longitude){
-            mapRef.current.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta:0.015,
-                longitudeDelta:0.0121,
-            },
-            2000,
-            );
-            setSelectedLocation({ latitude, longitude });
-    }
-
-    return location?.latitude && (
-        <Box alignItems='center' style={{ flex: 1 }} >
-            <Box mt={60} w="80%" position='absolute' zIndex={10}>
-            <GooglePlacesAutocomplete
-                placeholder='Search your memory'
-                fetchDetails={true}
-                onPress={(data, details = null) => {
-                    console.log(JSON.stringify(details?.geometry?.location));
-                    moveToLocation(details?.geometry?.location.lat,details?.geometry?.location.lng);
-                }}
-                query={{
-                    key: GOOGLE_MAP_API_KEY,
-                    language: 'en',
-                }}
-                styles={{
-                    container:{
-                        borderRadius:20
-                    },
-                    textInputContainer: {
-                        borderRadius: 20, // 設置文字輸入框容器的邊緣半徑為20像素，使邊緣變圓
-                    },
-                    textInput: {
-                        borderRadius: 20, // 設置文字輸入框的邊緣半徑為20像素，使邊緣變圓
-                    },
-                }}
+const WishListScreen = ({ navigation }) => {
+    const scrollX=useRef(new Animated.Value(0)).current;
+    return (
+        <ScrollView>
+            <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={data}
+                snapToInterval={450}
+                // snapToAlignment="center"
+                decelerationRate='fast'
+                keyExtractor={(item, index) => `${item}-${index}`}
+                // onScroll={Animated.event(
+                //     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                //     { useNativeDriver: true }
+                // )}
+                renderItem={({ item ,index}) => {
+                    // const inputRange = [
+                    //     (index - 1) * 450,
+                    //     index * 450,
+                    //     (index + 1) * 450]
+                    // const scale = scrollX.interpolate({
+                    //     inputRange,
+                    //     outputRange: [1, 1.1, 1],
+                    // });
+                    return (
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate('AccountScreen', { item }); }}
+                            style={{ width: 450 }}
+                        >
+                            <Box style={[
+                                // StyleSheet.absoluteFillObject,
+                                // { overflow: 'hidden' }
+                            ]}>
+                                <Image source={item.image} style={styles.image}
+                                    // style={[StyleSheet.absoluteFillObject,
+                                    // {
+                                    //     resizeMode: 'cover',
+                                    //     width:450,
+                                    //     height:300,
+                                    //     transform: [{ scale }]
+                                    // }
+                                    // ]} 
+                                    />
+                                {/* <Box>
+                                        <Text style={styles.title}>{item.title}</Text>
+                                        <Text style={styles.location}>{item.location}</Text>
+                                    </Box> */}
+                            </Box>
+                        </TouchableOpacity>
+                    )
+                }
+                }
             />
-            </Box>
-            <MapView
-                ref={mapRef}
-                style={styles.map}
-                provider={PROVIDER_GOOGLE}
-                customMapStyle={MapViewStyle}
-                showsUserLocation={true}
-                region={{
-                    latitude: location?.latitude,
-                    longitude: location?.longitude,
-                    latitudeDelta: 2,
-                    longitudeDelta: 2
-                }} > 
-                
-                <Marker
-                    coordinate={{
-                        latitude: location?.latitude,
-                        longitude: location?.longitude
-                    }}
-                    title={'I am here'}
-                    description={'哈摟哈'}
-                >
-                    <MaterialCommunityIcons name="star" color="#FFD306" size={20}/>
-                </Marker>
-                {selectedLocation && ( // 檢查 selectedLocation 是否存在，如果存在則顯示標記
-                    <Marker
-                        coordinate={{
-                            latitude: selectedLocation.latitude,
-                            longitude: selectedLocation.longitude
-                        }}
-                        title={'Selected Location'}
-                        description={'Description of selected location'}
-                    >
-                        <MaterialCommunityIcons name="star" color="#131313" size={40}/>
-                    </Marker>
-                )}
-                
-            </MapView>
-        </Box>
-    );
+        </ScrollView>
+    )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    pill: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
     },
-    map: {
+    pillText: {},
+    title: {
+        fontWeight: '800',
+        fontSize: 22,
+
+    },
+    location: {
+        fontSize: 12,
+        opacity: 0.8,
+    },
+    image: {
         width: '100%',
-        height: '100%',
+        height: 300,
+
     },
-});
+})
 
 export default WishListScreen;

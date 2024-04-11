@@ -13,7 +13,7 @@ const DetailScreen = ({ route }) => {
     } = route.params;
     const buttontitle = `Buy Now for $${star}`
     return (
-        <Center bgColor="white" height="100%">
+        <Center height="100%">
             <ScrollView bgColor='#fff' w='100%' h='100%'>
                 <Center style={{}}>
                     <Box mt="$5" style={{}}>

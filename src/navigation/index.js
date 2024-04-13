@@ -11,17 +11,19 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Divider, Center, Image, Box, Text, Pressable } from '@gluestack-ui/themed';
-
 import HomeScreen from '../screens/HomeScreen';
 import DetailScreen from '../screens/DetailScreen';
 import MapScreen from '../screens/MapScreen'
 import SettingScreen from '../screens/SettingScreen';
 import PhotoDetailScreen from '../screens/PhotoDetailScreen'
+import NullScreen from '../screens/NullScreen';
 import MyTheme from '../theme';
+import Animated from 'react-native-reanimated';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+
 
 const Navigation = () => {
     return (
@@ -38,11 +40,21 @@ const CustomDrawerContent = (props) => {
         >
             <Box h={180} justifyContent='center'>
                 <Center pt={50} pr={150}>
+                    <Animated.Image
+                        h={48}
+                        w={48}
+                        borderRadius={999}
+                        mb={10}
+                        source={{
+                            uri: 'https://s3-alpha-sig.figma.com/img/a14c/921b/dcea36fbb59ee6c44fdec352c284fb5b?Expires=1712534400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=AyaCYlh27eIYoF-2guDSrpqgnRLhWWxiDkXCz-VX5him7p~wdXuPxHXmtBs1dRFJdjagDxhdIyQlEXhiNk5MDGAisqZTEbT7cQboGeCAICLwZDbAboBQ06jHmPZSQ-DVQ3YNPWzZIkZgf2JsXxTZwD0TiskicoZeoIz~Vtg1INdOk-hJtuwSjJB-YcJQ0R2PIhpUZn4Jy-GMMQ3KkIk3ympb0RJpOxRYSDGQ3rwg9SQSwkqVwaHiOdXVTHfCsjp6WcEPpA8DF8ZkhV0sNWs-GNO-7C7PsCh74N0n7QN52hUhKllidmSTyxdJSIq~aZWcRcGczUud0mANI9CqkF58lw__'
+                        }}
+                        alt='albumImage'
+                    />
                     <Text fontWeight='500'
                         color='#131313'
                         fontSize={24}
                         lineHeight={28}
-                    >My journeys</Text>
+                    >May</Text>
                 </Center>
             </Box>
             <Divider my="$2" />
@@ -58,7 +70,7 @@ const MyDrawer = () => {
         <Drawer.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                drawerActiveBackgroundColor: colors.purple,
+                drawerActiveBackgroundColor: colors.darkGreen,
                 drawerActiveTintColor: colors.white,
                 drawerStyle: { width: 250 },
                 drawerLabelStyle: { fontSize: 14, fontWeight: '400', lineHeight: 16 },
@@ -131,22 +143,22 @@ const MyTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="PhotoDetailStack"
-                component={PhotoDetailStack}
+                name="DetailStack"
+                component={DetailStack}
                 options={{
                     title: '',
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
                         <Box >
                             <Ionicons position='absolute' zIndex={10} bottom={-10} left={-35} name="add-circle-sharp" color='#466A47' size={70} style={{ marginTop: -55 }} />
-                            <Box w={50} h={50} position='absolute' zIndex={0} borderRadius={50} bottom={-10} left={-35} backgroundColor='#fff' />
+                            <Box w={50} h={50} position='absolute' zIndex={0} borderRadius={50} bottom={0} left={-25} backgroundColor='#fff' />
                         </Box>
                     ),
                 }}
             />
             <Tab.Screen
-                name="MapScreen"
-                component={MapScreen}
+                name="MapStack"
+                component={MapStack}
                 options={{
                     title: '',
                     tabBarIconStyle: {
@@ -197,36 +209,55 @@ const SettingsStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-const PhotoDetailStack = ({ navigation }) => {
+const DetailStack = ({ navigation }) => {
     return (
-        <Stack.Navigator
-            screenOptions={{
-                animation:'none', // 或者 'none'
-            }}>
+        <Stack.Navigator>
             <Stack.Screen
                 name="DetailScreen"
                 component={DetailScreen}
                 options={{
-                    title: null,
-                    headerShadowVisible: false,
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
                 }}
             />
             <Stack.Screen
                 name="PhotoDetailScreen"
                 component={PhotoDetailScreen}
                 options={{
-                    title: null,
-                    headerShadowVisible: false,
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+        </Stack.Navigator>
+    );
+}
+const MapStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="MapScreen"
+                component={MapScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+            <Stack.Screen
+                name="DetailStack"
+                component={DetailStack}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
                 }}
             />
         </Stack.Navigator>
     );
 }
 const HomeStack = ({ navigation }) => {
-    const [toggle, setToggle] = useState(true);
-    const toggleFunction = () => {
-        setToggle(!toggle);
-    };
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -257,16 +288,7 @@ const HomeStack = ({ navigation }) => {
                 name="Detail"
                 component={DetailScreen}
                 options={{
-                    title: null,
-                    headerShadowVisible: false,
-                    headerTintColor: '#131313',
-                    headerRight: () => (
-                        <Pressable onPress={() => toggleFunction()}>
-                            {toggle ?
-                                <MaterialCommunityIcons name='bookmark-outline' color='#131313' size={26} /> :
-                                <MaterialCommunityIcons name='bookmark' color='#6200EE' size={26} />}
-                        </Pressable>
-                    ),
+                    headerShown: false,
                 }}
             />
         </Stack.Navigator>

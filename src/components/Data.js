@@ -98,11 +98,32 @@ export const data = [
             }];
 export const testdata = [
             {
+                coordinate: {
+                    latitude: 25.082133,
+                    longitude: 121.567213,
+                },
                 id: 1,
                 title: "1111111",
-                date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/2.jpeg")
+                date: "7/22~7/23",
+                image:require("../../image/101.jpg"),
+                content:"歐洲旅行是一次美妙的經歷。古老的建築、豐富的文化和美食讓人印象深刻。探索每個城市的街道，品嚐當地美食，以及欣賞藝術和歷史遺產是旅程中的亮點。建議花時間計劃路線，並保持開放心態，享受每個城市的獨特之處。",
+                data2:{
+                    day1:{
+                        title: "1111111",
+                        location:"陽明山",
+                        image:require("../../image/2.jpeg"),
+                        content:"歐洲旅行是一次美妙的經歷。古老的建築、豐富的文化和美食讓人印象深刻。探索每個城市的街道，品嚐當地美食，以及欣賞藝術和歷史遺產是旅程中的亮點。建議花時間計劃路線，並保持開放心態，享受每個城市的獨特之處。",
+                    },
+                    day2:{
+                        image:require("../../image/2.jpeg"),
+                        content:"歐洲旅行是一次美妙的經歷。古老的建築、豐富的文化和美食讓人印象深刻。探索每個城市的街道，品嚐當地美食，以及欣賞藝術和歷史遺產是旅程中的亮點。建議花時間計劃路線，並保持開放心態，享受每個城市的獨特之處。",
+                    },
+                    day3:{
+                        image:require("../../image/2.jpeg"),
+                        content:"歐洲旅行是一次美妙的經歷。古老的建築、豐富的文化和美食讓人印象深刻。探索每個城市的街道，品嚐當地美食，以及欣賞藝術和歷史遺產是旅程中的亮點。建議花時間計劃路線，並保持開放心態，享受每個城市的獨特之處。",
+                    },
+                }
             },
             {
                 id: 2,
@@ -116,7 +137,7 @@ export const testdata = [
                 title: "333333",
                 date: "7/22~7/23",
                 location:"陽明山",
-                image:require("../../image/2.jpeg")
+                image:{url:'https://i.pinimg.com/564x/d8/70/98/d87098cab73233faed9b6345665e1ea3.jpg'}
             },
             {
                 id: 4,

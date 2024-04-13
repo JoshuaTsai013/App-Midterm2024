@@ -32,7 +32,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow EV Station App to use your location."
         }
-      ]
+      ],
+      "expo-router"
     ],
     "extra": {
       "eas": {

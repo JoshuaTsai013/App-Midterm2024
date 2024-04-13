@@ -8,7 +8,7 @@ import { Marker } from 'react-native-maps';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAP_API_KEY } from "../Api";
-import { data } from "../components/Data"
+import { data,testdata } from "../components/Data"
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
 
 const { width, height } = Dimensions.get("window");
@@ -16,7 +16,7 @@ const CARD_HEIGHT = 180;
 const CARD_WIDTH = width * 0.9;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
-const MapScreen = () => {
+const MapScreen = ({navigation}) => {
 
     const { location, setLocation } = useContext(UserLocation);
     const [selectedLocation, setSelectedLocation] = useState(null); // 新增 selectedLocation 狀態來存儲選擇的位置
@@ -171,7 +171,7 @@ const MapScreen = () => {
                         >
                             <Animated.View style={styles.markerWrap}>
                                 <Animated.Image
-                                    source={require('../../image/locationIcon1.png')}
+                                    source={require('../../image/locationIcon.png')}
                                     style={[styles.marker, scaleStyle]}
                                     resizeMode="cover" />
                             </Animated.View>
@@ -190,10 +190,9 @@ const MapScreen = () => {
                     >
                         <Animated.View style={styles.markerWrap}>
                             <Animated.Image
-                                source={require('../../image/locationIcon1.png')}
+                                source={require('../../image/locationIcon.png')}
                                 style={styles.marker}
                                 resizeMode="center" />
-                            {/* <FontAwesome name='location-dot' size={30} color='#466A47' /> */}
                         </Animated.View>
                     </Marker>
                 )}
@@ -229,7 +228,7 @@ const MapScreen = () => {
                     { useNativeDriver: true }
                 )}
             >
-                {data.map((marker, index) => (
+                {testdata.map((marker, index) => (
                     <HStack alignItems='center' style={styles.card} key={index}>
                         <VStack gap={5} style={styles.textContent}>
                             <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
@@ -239,11 +238,17 @@ const MapScreen = () => {
                                 <Text numberOfLines={1} style={styles.cardLocation}>{marker.location}</Text>
                             </HStack>
                         </VStack>
-                        <Image
-                            source={marker.data2.day1.image}
-                            style={styles.cardImage}
+                        <Pressable
+                        style={styles.cardImage}
+                         onPress={() => {
+                            navigation.navigate('DetailScreen',{marker});
+                          }}>
+                            <Image
+                            source={marker.image}
+                            style={styles.image}
                             resizeMode="cover"
                         />
+                        </Pressable>
                     </HStack>
                 ))}
             </Animated.ScrollView>)}
@@ -280,6 +285,9 @@ const styles = StyleSheet.create({
     },
     cardImage: {
         flex: 2.4,
+        marginRight:5,
+    },
+    image:{
         width: "100%",
         height: "90%",
         alignSelf: "center",

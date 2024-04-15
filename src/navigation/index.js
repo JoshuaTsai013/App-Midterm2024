@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavigationContainer, useTheme} from '@react-navigation/native';
+import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
@@ -9,19 +9,21 @@ import {
 } from '@react-navigation/drawer';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Divider, Center, Image, Box, Text, Pressable } from '@gluestack-ui/themed';
-
 import HomeScreen from '../screens/HomeScreen';
 import DetailScreen from '../screens/DetailScreen';
-import WishListScreen from '../screens/WishListScreen';
-import MyBookScreen from '../screens/MyBookScreen'
+import MapScreen from '../screens/MapScreen'
 import SettingScreen from '../screens/SettingScreen';
-import AccountScreen from '../screens/AccountScreen'
+import PhotoDetailScreen from '../screens/PhotoDetailScreen'
+import NullScreen from '../screens/NullScreen';
 import MyTheme from '../theme';
+import Animated from 'react-native-reanimated';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+
 
 const Navigation = () => {
     return (
@@ -38,7 +40,7 @@ const CustomDrawerContent = (props) => {
         >
             <Box h={180} justifyContent='center'>
                 <Center pt={50} pr={150}>
-                    <Image
+                    <Animated.Image
                         h={48}
                         w={48}
                         borderRadius={999}
@@ -48,11 +50,11 @@ const CustomDrawerContent = (props) => {
                         }}
                         alt='albumImage'
                     />
-                    <Text fontWeight='500' 
-                          color='#131313' 
-                          fontSize={24} 
-                          lineHeight={28}
-                          >May</Text>
+                    <Text fontWeight='500'
+                        color='#131313'
+                        fontSize={24}
+                        lineHeight={28}
+                    >May</Text>
                 </Center>
             </Box>
             <Divider my="$2" />
@@ -68,7 +70,7 @@ const MyDrawer = () => {
         <Drawer.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                drawerActiveBackgroundColor:colors.purple,
+                drawerActiveBackgroundColor: colors.darkGreen,
                 drawerActiveTintColor: colors.white,
                 drawerStyle: { width: 250 },
                 drawerLabelStyle: { fontSize: 14, fontWeight: '400', lineHeight: 16 },
@@ -83,17 +85,6 @@ const MyDrawer = () => {
                     drawerLabel: "Home",
                     drawerIcon: ({ color }) => (
                         <MaterialCommunityIcons name="home" color={color} size={26} />
-                    ),
-                }}
-            />
-            <Drawer.Screen
-                name="Account"
-                component={AccountStack}
-                options={{
-                    headerShown: false,
-                    drawerLabel: "Account",
-                    drawerIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="account-circle" color={color} size={26} />
                     ),
                 }}
             />
@@ -117,42 +108,65 @@ const MyTabs = () => {
         <Tab.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                tabBarActiveTintColor:colors.purple,
+                tabBarActiveTintColor: colors.darkGreen,
+                tabBarStyle: {
+                    position: 'absolute',
+                    bottom: -20,
+                    left: 0,
+                    right: 0,
+                    elevation: 0, // 避免底部陰影
+                    backgroundColor: 'white', // 背景顏色
+                    borderTopWidth: 1, // 移除頂部邊框線
+                    height: 90, // Tab Bar 的高度
+                },
+                tabBarItemStyle: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 10,
+                },
             }}
+
         >
             <Tab.Screen
                 name="HomeStack"
                 component={HomeStack}
                 options={{
                     headerShown: false,
-                    title: "Home",
-                    tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="home" color={color} size={26} />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="wishlist"
-                component={WishListScreen}
-                options={{
-                    title: "Wishlist",
-                    headerShown: false,
-                    tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="map" color={color} size={26} />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="MyBook"
-                component={MyBookScreen}
-                options={{
-                    title: "My Books",
-                    headerTitleStyle: {
-                        fontWeight: '400',
-                        fontSize: 20
+                    title: '',
+                    tabBarIconStyle: {
+                        marginLeft: 60,
                     },
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="book-open" color={color} size={26} />
+                        <MaterialCommunityIcons name="home" color={color} size={30} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="DetailStack"
+                component={DetailStack}
+                options={{
+                    title: '',
+                    headerShown: false,
+                    tabBarIcon: ({ color }) => (
+                        <Box >
+                            <Ionicons position='absolute' zIndex={10} bottom={-10} left={-35} name="add-circle-sharp" color='#466A47' size={70} style={{ marginTop: -55 }} />
+                            <Box w={50} h={50} position='absolute' zIndex={0} borderRadius={50} bottom={0} left={-25} backgroundColor='#fff' />
+                        </Box>
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="MapStack"
+                component={MapStack}
+                options={{
+                    title: '',
+                    tabBarIconStyle: {
+                        marginRight: 60,
+                    },
+                    headerShown: false,
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="book-open" color={color} size={30} />
                     ),
                 }}
             />
@@ -195,11 +209,55 @@ const SettingsStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
+const DetailStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="DetailScreen"
+                component={DetailScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+            <Stack.Screen
+                name="PhotoDetailScreen"
+                component={PhotoDetailScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+        </Stack.Navigator>
+    );
+}
+const MapStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="MapScreen"
+                component={MapScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+            <Stack.Screen
+                name="DetailStack"
+                component={DetailStack}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+        </Stack.Navigator>
+    );
+}
 const HomeStack = ({ navigation }) => {
-    const [toggle, setToggle] = useState(true);
-    const toggleFunction = () => {
-        setToggle(!toggle);
-    };
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -230,41 +288,7 @@ const HomeStack = ({ navigation }) => {
                 name="Detail"
                 component={DetailScreen}
                 options={{
-                    title: null,
-                    headerShadowVisible: false,
-                    headerTintColor: '#131313',
-                    headerRight: () => (
-                        <Pressable onPress={() => toggleFunction()}>
-                            {toggle ? 
-                            <MaterialCommunityIcons name='bookmark-outline' color='#131313' size={26} /> :
-                            <MaterialCommunityIcons name='bookmark' color='#6200EE' size={26} />}
-                        </Pressable>
-                    ),
-                }}
-            />
-        </Stack.Navigator>
-    );
-}
-const AccountStack = ({ navigation }) => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="AccountScreen"
-                component={AccountScreen}
-                options={{
-                    title: "Account",
-                    headerTitleStyle: {
-                        fontWeight: '400',
-                        fontSize: 20
-                    },
-                    headerLeft: () => (
-                        <MaterialCommunityIcons
-                            name={'menu'}
-                            size={20}
-                            onPress={() => navigation.openDrawer()}
-                            style={{ marginRight: 20 }}
-                        />
-                    ),
+                    headerShown: false,
                 }}
             />
         </Stack.Navigator>

@@ -87,19 +87,19 @@ const DetailScreen = ({ navigation, route }) => {
                     </Box>;
                 }}
             />
-            <HStack w={width} height={80} paddingHorizontal={30} paddingTop={10} gap={150} bgColor={colors.white}  >
+            <HStack w={width} height={80} paddingHorizontal={30} paddingTop={10} gap={80} bgColor={colors.white}  >
                 <VStack gap={10}>
-                    <Input h={30} w={300} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                    <Input h={30} w={200} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
                         <InputField color={colors.black} value={title} onChangeText={titleChange} style={styles.title} />
                     </Input>
                     <HStack gap={0}>
                         <MaterialIcons name='location-on' color={colors.darkGray} size={20} style={{ position: 'absolute', left: 10, zIndex: 99 }} />
-                        <Input h={20} w={300} ml={20} pb={1} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                        <Input h={20} w={100} ml={20} pb={1} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
                             <InputField color={colors.darkGray} value={location} onChangeText={locationChange} style={styles.locationName} />
                         </Input>
                     </HStack>
                 </VStack>
-                <HStack >
+                <HStack gap={7} position='absolute' right={30} top={15}>
                     <FontAwesome name='calendar' size={20} color={colors.darkGreen} />
                     <Text color={colors.darkGreen} style={styles.fullDate}>{fullDate}</Text>
                 </HStack>
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
         height: 20,
     },
     fullDate: {
-        fontSize: 14,
-        paddingTop: 2,
+        fontSize: 16,
+        paddingTop: 1,
         fontWeight: '500',
     }
 });

@@ -143,8 +143,8 @@ const MyTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="DetailStack"
-                component={DetailStack}
+                name="SettingsStack"
+                component={SettingsStack}
                 options={{
                     title: '',
                     headerShown: false,
@@ -209,30 +209,30 @@ const SettingsStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-const DetailStack = ({ navigation }) => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="DetailScreen"
-                component={DetailScreen}
-                options={{
-                    headerShown: false,
-                    presentation: 'transparentModal',
-                    animation: 'fade'
-                }}
-            />
-            <Stack.Screen
-                name="PhotoDetailScreen"
-                component={PhotoDetailScreen}
-                options={{
-                    headerShown: false,
-                    presentation: 'transparentModal',
-                    animation: 'fade'
-                }}
-            />
-        </Stack.Navigator>
-    );
-}
+// const DetailStack = ({ navigation }) => {
+//     return (
+//         <Stack.Navigator>
+//             <Stack.Screen
+//                 name="DetailScreen"
+//                 component={DetailScreen}
+//                 options={{
+//                     headerShown: false,
+//                     presentation: 'transparentModal',
+//                     animation: 'fade'
+//                 }}
+//             />
+//             <Stack.Screen
+//                 name="PhotoDetailScreen"
+//                 component={PhotoDetailScreen}
+//                 options={{
+//                     headerShown: false,
+//                     presentation: 'transparentModal',
+//                     animation: 'fade'
+//                 }}
+//             />
+//         </Stack.Navigator>
+//     );
+// }
 const MapStack = ({ navigation }) => {
     return (
         <Stack.Navigator>
@@ -246,8 +246,17 @@ const MapStack = ({ navigation }) => {
                 }}
             />
             <Stack.Screen
-                name="DetailStack"
-                component={DetailStack}
+                name="DetailScreen"
+                component={DetailScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+            <Stack.Screen
+                name="PhotoDetailScreen"
+                component={PhotoDetailScreen}
                 options={{
                     headerShown: false,
                     presentation: 'transparentModal',

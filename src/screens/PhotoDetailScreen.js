@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { NavigationContainer, useTheme } from '@react-navigation/native';
-import MapView, { Marker } from 'react-native-maps';
+import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { HStack, Center, Box, Text, Pressable } from "@gluestack-ui/themed";
 import { View, StyleSheet, Image, ScrollView, Dimensions, Platform, useWindowDimensions } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import MyTheme from '../theme';
 import Animated, { FadeInLeft } from 'react-native-reanimated';
 import ActionSheet from 'react-native-actionsheet';
@@ -16,6 +13,9 @@ export default function PhotoDetailScreen({ navigation, route }) {
    const { colors } = useTheme();
    const { item } = route.params;
    const { width } = useWindowDimensions();
+   const toggleFunction = () => {
+       setToggle(!toggle);
+   };
    let actionSheet = useRef();
    let optionArray = [
       'Delete', 'Add', 'Cancel'
@@ -23,9 +23,9 @@ export default function PhotoDetailScreen({ navigation, route }) {
    const showActionSheet = () => {
       actionSheet.current.show();
    }
-
+  
    return (
-      <Box w={width} style={styles.container}>
+      <Box w={width} bgColor={colors.white} style={styles.container}>
          <Pressable position='absolute' top={70} right={30} onPress={showActionSheet}>
             <Image
                source={require('../../image/actionButton.png')}
@@ -35,8 +35,8 @@ export default function PhotoDetailScreen({ navigation, route }) {
             <MaterialIcons name='arrow-back-ios-new' color={colors.darkGreen} size={22} />
          </Pressable>
          <Animated.Image source={item.image} style={styles.image} />
-         <Animated.Text style={styles.text} entering={FadeInLeft.duration(400)}>
-            {item.location}
+         <Animated.Text style={styles.text} entering={FadeInLeft.duration(700)}>
+            {item.note}
          </Animated.Text>
          <ActionSheet
             ref={actionSheet}
@@ -57,12 +57,11 @@ const styles = StyleSheet.create({
       alignContent: 'center',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#fff'
    },
    image: {
       width: '100%',
       height: '100%',
-      maxHeight: 500,
+      maxHeight: 630,
       resizeMode: 'contain',
       marginBottom: 40,
       marginTop: 40

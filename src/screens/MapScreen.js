@@ -5,10 +5,11 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import MapViewStyle from '../json/MapViewStyle.json'
 import { UserLocation } from '../components/UserLocation'
 import { Marker } from 'react-native-maps';
+import { useTheme } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAP_API_KEY } from "../Api";
-import { data,testdata } from "../components/Data"
+import { data, region } from "../components/Data"
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
 
 const { width, height } = Dimensions.get("window");
@@ -16,18 +17,16 @@ const CARD_HEIGHT = 180;
 const CARD_WIDTH = width * 0.9;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
-const MapScreen = ({navigation}) => {
 
+const MapScreen = ({ navigation }) => {
+    const { colors } = useTheme();
     const { location, setLocation } = useContext(UserLocation);
     const [selectedLocation, setSelectedLocation] = useState(null); // 新增 selectedLocation 狀態來存儲選擇的位置
+    const [selectedPlaceName, setSelectedPlaceName] = useState('');
     const [zoomRatio, setZoomRatio] = useState(1);
-    const [showScrollView, setShowScrollView] = useState(true); // 控制 ScrollView 的显示状态
-    const region = {
-        latitude: 25.067247,
-        longitude: 121.611504,
-        latitudeDelta: 0.04864195044303443,
-        longitudeDelta: 0.040142817690068,
-    }
+    const [showScrollView, setShowScrollView] = useState(true);
+
+    const [data2Array, setData2Array] = useState([]);
 
     const mapRef = useRef(null);
     const _scrollView = useRef(null);
@@ -35,10 +34,21 @@ const MapScreen = ({navigation}) => {
     let mapAnimation = new Animated.Value(0);
 
     useEffect(() => {
+        // 在渲染完成後收集所有的 innerItem 到 data2Array
+        const newData2Array = [];
+        data.forEach((testItem) => {
+            if (testItem.data2) {
+                newData2Array.push(...Object.values(testItem.data2));
+            }
+        });
+        setData2Array(newData2Array);
+    }, []);
+
+    useEffect(() => {
         mapAnimation.addListener(({ value }) => {
             let index = Math.floor(value / CARD_WIDTH + 0.3);
-            if (index >= data.length) {
-                index = data.length - 1;
+            if (index >= data2Array.length) {
+                index = data2Array.length - 1;
             }
             if (index <= 0) {
                 index = 0;
@@ -48,14 +58,14 @@ const MapScreen = ({navigation}) => {
             const regionTimeout = setTimeout(() => {
                 if (mapIndex !== index) {
                     mapIndex = index;
-                    const { coordinate } = data[index];
+                    const { coordinate } = data2Array[index];
                     mapRef.current.animateToRegion(
                         {
                             ...coordinate,
                             latitudeDelta: region.latitudeDelta,
                             longitudeDelta: region.longitudeDelta,
                         },
-                        350
+                        1000
                     );
                 }
             }, 10);
@@ -69,10 +79,10 @@ const MapScreen = ({navigation}) => {
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
         },
-            2000,
+            1000,
         );
         setSelectedLocation({ latitude, longitude });
-        setShowScrollView(false); 
+        setShowScrollView(false);
     }
     const onRegionChangeComplete = (rgn) => {
         if (rgn.longitudeDelta > 0.02)
@@ -80,7 +90,7 @@ const MapScreen = ({navigation}) => {
         else
             setZoomRatio(1);
     }
-    const interpolations = data.map((marker, index) => {
+    const interpolations = data2Array.map((marker, index) => {
         const inputRange = [
             (index - 1) * CARD_WIDTH,
             index * CARD_WIDTH,
@@ -94,23 +104,14 @@ const MapScreen = ({navigation}) => {
         return { scale };
 
     });
-    const onMarkerPress = (mapEventData,index) => {
+    const onMarkerPress = (mapEventData) => {
         const markerID = mapEventData._targetInst.return.key;
-        const scaleStyle = {
-            transform: [
-                {
-                    scale: interpolations[index].scale,
-                    // scale: 1,
-                },
-            ],
-        };
-        let x = (markerID * CARD_WIDTH) + (markerID * 20); 
+        let x = (markerID * CARD_WIDTH) + (markerID * 20);
         if (Platform.OS === 'ios') {
-          x = x - SPACING_FOR_CARD_INSET;
+            x = x - SPACING_FOR_CARD_INSET;
         }
-        _scrollView.current.scrollTo({x: x+20, y: 0, animated: true});
-        console.log(markerID);
-      }
+        _scrollView.current.scrollTo({ x: x + 20, y: 0, animated: true });
+    }
 
     return location?.latitude && (
         <Box alignItems='center' flex={1}>
@@ -119,8 +120,9 @@ const MapScreen = ({navigation}) => {
                     placeholder='Search your memory'
                     fetchDetails={true}
                     onPress={(data, details = null) => {
+                        setSelectedPlaceName(details.name);
                         console.log(JSON.stringify(details?.geometry?.location));
-                        moveToLocation(details?.geometry?.location.lat, details?.geometry?.location.lng);
+                        moveToLocation(details.geometry.location.lat, details.geometry.location.lng);
                     }}
                     query={{
                         key: GOOGLE_MAP_API_KEY,
@@ -148,13 +150,12 @@ const MapScreen = ({navigation}) => {
                 showsUserLocation={true}
                 onRegionChangeComplete={onRegionChangeComplete}
                 region={{
-                    latitude: location?.latitude,
-                    longitude: location?.longitude,
+                    latitude: region.latitude,
+                    longitude: region.longitude,
                     latitudeDelta: region.latitudeDelta,
                     longitudeDelta: region.longitudeDelta
                 }}>
-                {(zoomRatio > 0.14) && data.map((marker, index) => {
-                    console.log(index);
+                {(zoomRatio > 0.14) && data2Array.map((marker, index) => {
                     const scaleStyle = {
                         transform: [
                             {
@@ -167,7 +168,7 @@ const MapScreen = ({navigation}) => {
                         <Marker
                             coordinate={marker.coordinate}
                             key={index}
-                            onPress={(e)=>onMarkerPress(e)}
+                            onPress={(e) => onMarkerPress(e)}
                         >
                             <Animated.View style={styles.markerWrap}>
                                 <Animated.Image
@@ -184,14 +185,13 @@ const MapScreen = ({navigation}) => {
                             latitude: selectedLocation.latitude,
                             longitude: selectedLocation.longitude
                         }}
-                        title={'Selected Location'}
-                        description={'Description of selected location'}
-                        onPress={()=>setShowScrollView(true)}
+                        title={selectedPlaceName}
+                        onPress={() => setShowScrollView(true)}
                     >
                         <Animated.View style={styles.markerWrap}>
                             <Animated.Image
                                 source={require('../../image/locationIcon.png')}
-                                style={styles.marker}
+                                style={[styles.marker, { transform: [{ scale: 1.5 }] }]}
                                 resizeMode="center" />
                         </Animated.View>
                     </Marker>
@@ -228,28 +228,59 @@ const MapScreen = ({navigation}) => {
                     { useNativeDriver: true }
                 )}
             >
-                {testdata.map((marker, index) => (
-                    <HStack alignItems='center' style={styles.card} key={index}>
-                        <VStack gap={5} style={styles.textContent}>
-                            <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
-                            <Text ml={2} numberOfLines={1} style={styles.cardDate}>{marker.date}</Text>
-                            <HStack gap={5} mt={20} ml={2}>
-                                <FontAwesome name='location-dot' size={16} color='#466A47' />
-                                <Text numberOfLines={1} style={styles.cardLocation}>{marker.location}</Text>
+                {data.map((testItem, testIndex) => (
+                    <React.Fragment key={testIndex}>
+                        {testItem.data2 && testItem.data2.map((innerItem, innerIndex) => (
+                            <HStack
+                                alignItems='center'
+                                bgColor={colors.white}
+                                borderColor={colors.lightGray}
+                                style={styles.card}
+                                key={`${testIndex}_${innerIndex}`}>
+                                <VStack gap={5} style={styles.textContent}>
+                                    <Text
+                                        color={colors.black}
+                                        numberOfLines={1}
+                                        style={styles.cardtitle}
+                                    >{testItem.title}</Text>
+                                    <Text
+                                        ml={2}
+                                        color={colors.darkGray}
+                                        numberOfLines={1}
+                                        style={styles.cardDate}
+                                    >{innerItem.date}</Text>
+                                    <HStack
+                                        gap={5}
+                                        mt={20}
+                                        ml={2}
+                                    >
+                                        <FontAwesome
+                                            name='location-dot'
+                                            size={16}
+                                            color={colors.darkGreen}
+                                        />
+                                        <Text
+                                            color={colors.darkGreen}
+                                            numberOfLines={1}
+                                            style={styles.cardLocation}
+                                        >{innerItem.location}</Text>
+                                    </HStack>
+                                </VStack>
+                                <Pressable
+                                    style={styles.cardImage}
+                                    onPress={() => {
+                                        navigation.navigate('DetailScreen', { item: testItem });
+                                    }}
+                                >
+                                    <Image
+                                        source={innerItem.image}
+                                        style={styles.image}
+                                        resizeMode="cover"
+                                    />
+                                </Pressable>
                             </HStack>
-                        </VStack>
-                        <Pressable
-                        style={styles.cardImage}
-                         onPress={() => {
-                            navigation.navigate('DetailScreen',{marker});
-                          }}>
-                            <Image
-                            source={marker.image}
-                            style={styles.image}
-                            resizeMode="cover"
-                        />
-                        </Pressable>
-                    </HStack>
+                        ))}
+                    </React.Fragment>
                 ))}
             </Animated.ScrollView>)}
         </Box>
@@ -274,9 +305,7 @@ const styles = StyleSheet.create({
     },
     card: {
         elevation: 2,
-        backgroundColor: '#fff',
         borderRadius: 20,
-        borderColor: "gray",
         borderWidth: 0.2,
         marginHorizontal: 10,
         height: CARD_HEIGHT,
@@ -285,9 +314,9 @@ const styles = StyleSheet.create({
     },
     cardImage: {
         flex: 2.4,
-        marginRight:5,
+        marginRight: 5,
     },
-    image:{
+    image: {
         width: "100%",
         height: "90%",
         alignSelf: "center",
@@ -301,15 +330,12 @@ const styles = StyleSheet.create({
     cardtitle: {
         fontSize: 22,
         fontWeight: "bold",
-        color: "#131313"
     },
     cardDate: {
-        fontSize: 12,
-        color: "#131313"
+        fontSize: 14,
     },
     cardLocation: {
         fontSize: 14,
-        color: "#466A47",
         fontWeight: "bold",
     },
     markerWrap: {

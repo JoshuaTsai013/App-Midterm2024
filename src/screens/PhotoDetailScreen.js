@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
    image: {
       width: '100%',
       height: '100%',
-      maxHeight: 630,
+      maxHeight: 650,
       resizeMode: 'contain',
       marginBottom: 40,
       marginTop: 40

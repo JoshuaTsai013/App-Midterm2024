@@ -262,6 +262,17 @@ const HomeStack = ({ navigation }) => {
                 component={DetailScreen}
                 options={{
                     headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+            <Stack.Screen
+                name="PhotoDetailScreen"
+                component={PhotoDetailScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
                 }}
             />
         </Stack.Navigator>

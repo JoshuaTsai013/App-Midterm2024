@@ -72,39 +72,40 @@ const DetailScreen = ({ navigation, route }) => {
                 keyExtractor={item => item.id.toString()}
                 data={data2Array}
                 showsHorizontalScrollIndicator={false}
+                style={{ width, height:600 }}
                 renderItem={({ item }) => {
-                    return <Box style={{ width, height: height / 1.4 }}>
+                    return <Box style={{ width:width, height:'100%'}}>
                         <Pressable
                             onPress={() => {
                                 navigation.navigate('PhotoDetailScreen', { item });
                             }}>
                             <Image
                                 source={item.image}
-                                style={{ width: '100%', height: 400, resizeMode: 'cover' }}
+                                style={{ width: '100%', height:'100%', resizeMode: 'cover' }}
                             />
                         </Pressable>
                     </Box>;
                 }}
             />
-            <HStack w={width} height={80} paddingHorizontal={30} paddingTop={10} gap={150} position='absolute' bottom={400} bgColor={colors.white} zIndex={10}>
+            <HStack w={width} height={80} paddingHorizontal={30} paddingTop={10} gap={150} bgColor={colors.white}  >
                 <VStack gap={10}>
-                    <Input h={30} w={300} position='absolute' bottom={40} left={-10} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                    <Input h={30} w={300} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
                         <InputField color={colors.black} value={title} onChangeText={titleChange} style={styles.title} />
                     </Input>
-                    <HStack pl={2} gap={0} position='absolute' bottom={13} left={3}>
-                        <MaterialIcons name='location-on' color={colors.darkGray} size={20}  style={{position:'absolute',bottom:-1,zIndex:99}}/>
-                        <Input h={20} w={300} ml={5} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                    <HStack gap={0}>
+                        <MaterialIcons name='location-on' color={colors.darkGray} size={20} style={{ position: 'absolute', left: 10, zIndex: 99 }} />
+                        <Input h={20} w={300} ml={20} pb={1} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
                             <InputField color={colors.darkGray} value={location} onChangeText={locationChange} style={styles.locationName} />
                         </Input>
                     </HStack>
                 </VStack>
-                <HStack position='absolute' bottom={45} right={27} gap={5} pt={5} zIndex={99}>
+                <HStack >
                     <FontAwesome name='calendar' size={20} color={colors.darkGreen} />
                     <Text color={colors.darkGreen} style={styles.fullDate}>{fullDate}</Text>
                 </HStack>
             </HStack>
             <FlatList
-                style={{ paddingTop: 60, position: 'absolute', bottom: 0, height: 465 }}
+                style={{ paddingTop: 0,width:width,height:700 }}
                 data={data2Array}
                 renderItem={({ item, index }) => {
                     return <RenderItem item={item} index={index} navigation={navigation} />;
@@ -118,10 +119,6 @@ const DetailScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-    input: {
-        height: 30,
-        fontSize: 16,
-    },
     container: {
         flex: 1,
         backgroundColor: '#fff',

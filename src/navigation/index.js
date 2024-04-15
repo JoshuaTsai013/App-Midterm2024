@@ -150,7 +150,7 @@ const MyTabs = () => {
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
                         <Box >
-                            <Ionicons position='absolute' zIndex={10} bottom={-10} left={-35} name="add-circle-sharp" color='#466A47' size={70} style={{ marginTop: -55 }} />
+                            <Ionicons position='absolute' zIndex={10} bottom={-10} left={-35} name="add-circle-sharp" color={colors.darkGreen} size={70} style={{ marginTop: -55 }} />
                             <Box w={50} h={50} position='absolute' zIndex={0} borderRadius={50} bottom={0} left={-25} backgroundColor='#fff' />
                         </Box>
                     ),
@@ -166,7 +166,7 @@ const MyTabs = () => {
                     },
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="book-open" color={color} size={30} />
+                        <Ionicons name="map" color={color} size={26}/>
                     ),
                 }}
             />
@@ -209,30 +209,6 @@ const SettingsStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-// const DetailStack = ({ navigation }) => {
-//     return (
-//         <Stack.Navigator>
-//             <Stack.Screen
-//                 name="DetailScreen"
-//                 component={DetailScreen}
-//                 options={{
-//                     headerShown: false,
-//                     presentation: 'transparentModal',
-//                     animation: 'fade'
-//                 }}
-//             />
-//             <Stack.Screen
-//                 name="PhotoDetailScreen"
-//                 component={PhotoDetailScreen}
-//                 options={{
-//                     headerShown: false,
-//                     presentation: 'transparentModal',
-//                     animation: 'fade'
-//                 }}
-//             />
-//         </Stack.Navigator>
-//     );
-// }
 const MapStack = ({ navigation }) => {
     return (
         <Stack.Navigator>

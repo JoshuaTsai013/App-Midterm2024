@@ -57,7 +57,7 @@ const RenderItem = ({ item, index, navigation }) => {
                     <Pressable
                         position='absolute'
                         bottom={0}
-                        left={155}
+                        right={5}
                         bgColor={colors.darkGreen}
                         style={styles.editButton}>
                         <MaterialIcons name='mode-edit' color={colors.white} size={16} />

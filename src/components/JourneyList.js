@@ -1,16 +1,16 @@
 import React from "react";
 import { FlatList } from "react-native";
-import BookDetail from "./BookDetail";
+import JourneyDetail from "./JourneyDetail";
 
-const BookList = ({ sections, navigation }) => {
+const JourneyList = ({ sections, navigation }) => {
   return (
     <FlatList
         data={sections}
-        renderItem={({ item }) => <BookDetail book={item} navigation={navigation} />}
+        renderItem={({ item }) => <JourneyDetail data={item} navigation={navigation} />}
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.title}
       />
   );
 };
 
-export default BookList;
+export default JourneyList;

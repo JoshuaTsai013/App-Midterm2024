@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@gluestack-ui/themed"
-import BookList from "../components/BookList";
+import JourneyList from "../components/JourneyList";
 import sections from "../json/JournalContent.json";
 import { useTheme } from '@react-navigation/native';
 
@@ -10,10 +10,10 @@ const HomeScreen = ({ navigation }) => {
     return (
         <>
             <Box bgColor="white" height="100%">
-                <Box bgColor={colors.purple} height={200}>
+                <Box bgColor={colors.darkGreen} height={200}>
                 </Box>
                 <Box bgColor="white" height="100%">
-                    <BookList
+                    <JourneyList
                         sections={sections}
                         navigation={navigation}
                     />

@@ -20,6 +20,7 @@ import PhotoDetailScreen from '../screens/PhotoDetailScreen'
 import NullScreen from '../screens/NullScreen';
 import MyTheme from '../theme';
 import Animated from 'react-native-reanimated';
+import { useFonts } from 'expo-font'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,27 +35,23 @@ const Navigation = () => {
     );
 }
 const CustomDrawerContent = (props) => {
+    const { colors } = useTheme();
+    const [fontsLoaded] = useFonts({
+        'Lugrasimo-Regular': require('../../assets/fonts/Lugrasimo-Regular.ttf')
+    })
+    if (!fontsLoaded) {
+        return undefined;
+    }
     return (
         <DrawerContentScrollView {...props}
             contentContainerStyle={{ paddingTop: 0 }}
-
         >
             <Box h={180} justifyContent='center'>
-                <Center pt={50} pr={150}>
-                    <Animated.Image
-                        h={48}
-                        w={48}
-                        borderRadius={999}
-                        mb={10}
-                        source={{
-                            uri: 'https://s3-alpha-sig.figma.com/img/a14c/921b/dcea36fbb59ee6c44fdec352c284fb5b?Expires=1712534400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=AyaCYlh27eIYoF-2guDSrpqgnRLhWWxiDkXCz-VX5him7p~wdXuPxHXmtBs1dRFJdjagDxhdIyQlEXhiNk5MDGAisqZTEbT7cQboGeCAICLwZDbAboBQ06jHmPZSQ-DVQ3YNPWzZIkZgf2JsXxTZwD0TiskicoZeoIz~Vtg1INdOk-hJtuwSjJB-YcJQ0R2PIhpUZn4Jy-GMMQ3KkIk3ympb0RJpOxRYSDGQ3rwg9SQSwkqVwaHiOdXVTHfCsjp6WcEPpA8DF8ZkhV0sNWs-GNO-7C7PsCh74N0n7QN52hUhKllidmSTyxdJSIq~aZWcRcGczUud0mANI9CqkF58lw__'
-                        }}
-                        alt='albumImage'
-                    />
+                <Center pt={50}>
                     <Text fontWeight='500'
-                        color='#131313'
-                        fontSize={24}
-                        lineHeight={28}
+                        color={colors.darkGreen}
+                        fontFamily='Lugrasimo-Regular'
+                        fontSize={35}
                     >wander</Text>
                 </Center>
             </Box>
@@ -261,7 +258,7 @@ const HomeStack = ({ navigation }) => {
                 }}
             />
             <Stack.Screen
-                name="Detail"
+                name="DetailScreen"
                 component={DetailScreen}
                 options={{
                     headerShown: false,

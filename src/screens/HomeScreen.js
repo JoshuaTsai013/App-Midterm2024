@@ -1,11 +1,12 @@
 import React from "react";
-import { HStack, Box, Text, Pressable, VStack, Center} from "@gluestack-ui/themed";
+import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
 import { StyleSheet, Image, ScrollView, Dimensions, Platform, _ScrollView } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 import { data, region } from "../components/Data"
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
+import { useFonts } from 'expo-font'
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -14,16 +15,62 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
+    const [fontsLoaded] = useFonts({
+        'Lugrasimo-Regular': require('../../assets/fonts/Lugrasimo-Regular.ttf')
+    })
+    if (!fontsLoaded) {
+        return undefined;
+    }
 
     return (
         <Box>
-            <Box bgColor="white" height="100%">
-                <Center h={200} bgColor={colors.lightGreen}>
-                <Text style={styles.title}>wander</Text>
-                    </Center>
-               
+            <Box bgColor="white" height="100%" alignItems="center">
+                <Center h='15%' mb={10} bgColor={colors.white}>
+                    <Text color={colors.darkGreen} style={styles.title}>wander</Text>
+                </Center>
 
-                <ScrollView>
+                <Menu
+                    placement="bottom end"
+                    borderColor={colors.lightGray}
+                    borderWidth={1}
+                    w={100}
+                    h={100}
+                    trigger={({ ...triggerProps }) => {
+                        return (
+                            <Button
+                                w={35}
+                                h={40}
+                                borderRadius={100}
+                                bgColor={colors.lightGray}
+                                position='absolute'
+                                right={15}
+                                top={80}
+                                {...triggerProps}>
+                                <Icon as={MenuIcon} size="md" />
+                            </Button>
+                        );
+                    }}
+                >
+                    <MenuItem w='100%' h={30} key="Settings" textValue="Settings">
+                        <MenuItemLabel w='100%' h={30} size='sm'>
+                            Add
+                        </MenuItemLabel>
+                    </MenuItem>
+                    <MenuItem w='100%' h={30} key="Setti" textValue="Settings">
+                        <MenuItemLabel w='100%' h={30} size='sm'>
+                            All
+                        </MenuItemLabel>
+                    </MenuItem>
+                    <MenuItem w='100%' h={30} key="Add account" textValue="Add account">
+                        <MenuItemLabel w='100%' h={30} size='sm'>
+                            Favorites
+                        </MenuItemLabel>
+                    </MenuItem>
+                </Menu>
+
+
+                <ScrollView
+                  showsVerticalScrollIndicator={false}>
                     {data.map((testItem, testIndex) => (
 
                         <HStack
@@ -104,21 +151,28 @@ const HomeScreen = ({ navigation }) => {
 };
 const styles = StyleSheet.create({
     title: {
-        fontSize: 40,
+        fontFamily: 'Lugrasimo-Regular',
+        fontSize: 50,
         fontWeight: "bold",
     },
     card: {
-        elevation: 2,
+        marginBottom: 40,
         borderRadius: 20,
         borderWidth: 0.2,
         marginHorizontal: 10,
         height: CARD_HEIGHT,
         width: CARD_WIDTH,
-        overflow: "hidden",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
     },
     cardImage: {
         flex: 2.4,
-        marginRight: 5,
+        marginLeft:15,
     },
     image: {
         width: "100%",

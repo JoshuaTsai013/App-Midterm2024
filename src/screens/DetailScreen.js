@@ -1,9 +1,8 @@
-import { View, FlatList, StyleSheet, Image, ScrollView, Dimensions, Platform, useWindowDimensions } from 'react-native';
+import { View, FlatList, StyleSheet, Image, ScrollView, TextInput, Dimensions, Platform, useWindowDimensions } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { testdata } from '../components/Data';
 import RenderItem from '../components/RenderItem';
-import { HStack, Center, Box, Text, Pressable, VStack } from "@gluestack-ui/themed";
+import { HStack, Center, Box, Text, Pressable, VStack, Input, InputField } from "@gluestack-ui/themed";
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useTheme } from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
@@ -11,11 +10,28 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const { width, height } = Dimensions.get('screen')
 
-const DetailScreen = ({ navigation }) => {
+const DetailScreen = ({ navigation, route }) => {
     const { colors } = useTheme();
+    const { item } = route.params;
+    const [data2Array, setData2Array] = useState(item.data2 ? Object.values(item.data2) : [item]);
+    const lastDate = data2Array.slice(-1)[0];
+    const firstDate = data2Array[0];
+    const [fullDate, setfullDate] = useState(lastDate.date == firstDate.date ? lastDate.date : `${firstDate.date}~${lastDate.date}`);
+    const [title, setTitle] = useState(item.title);
+    const [location, setLocation] = useState(item.location);
+
     const [toggle, setToggle] = useState(true);
     const toggleFunction = () => {
         setToggle(!toggle);
+    };
+    const renderFooter = () => {
+        return <Box h={100} />;
+    };
+    const titleChange = (value) => {
+        setTitle(value);
+    };
+    const locationChange = (value) => {
+        setLocation(value);
     };
 
     return (
@@ -54,7 +70,7 @@ const DetailScreen = ({ navigation }) => {
                 horizontal
                 pagingEnabled
                 keyExtractor={item => item.id.toString()}
-                data={testdata}
+                data={data2Array}
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => {
                     return <Box style={{ width, height: height / 1.4 }}>
@@ -70,39 +86,48 @@ const DetailScreen = ({ navigation }) => {
                     </Box>;
                 }}
             />
-            <HStack paddingHorizontal={30} paddingVertical={10} gap={130}>
+            <HStack w={width} height={80} paddingHorizontal={30} paddingTop={10} gap={150} position='absolute' bottom={400} bgColor={colors.white} zIndex={10}>
                 <VStack gap={10}>
-                    <Text style={styles.title}>環遊世界</Text>
-                    <HStack pl={2} gap={5}>
-                        <MaterialIcons name='location-on' color={colors.darkGray} size={20} />
-                        <Text color={colors.darkGray} style={styles.locationName}>陽明山</Text>
+                    <Input h={30} w={300} position='absolute' bottom={40} left={-10} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                        <InputField color={colors.black} value={title} onChangeText={titleChange} style={styles.title} />
+                    </Input>
+                    <HStack pl={2} gap={0} position='absolute' bottom={13} left={3}>
+                        <MaterialIcons name='location-on' color={colors.darkGray} size={20}  style={{position:'absolute',bottom:-1,zIndex:99}}/>
+                        <Input h={20} w={300} ml={5} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                            <InputField color={colors.darkGray} value={location} onChangeText={locationChange} style={styles.locationName} />
+                        </Input>
                     </HStack>
                 </VStack>
-                <HStack gap={5} pt={5}>
+                <HStack position='absolute' bottom={45} right={27} gap={5} pt={5} zIndex={99}>
                     <FontAwesome name='calendar' size={20} color={colors.darkGreen} />
-                    <Text color={colors.darkGreen} style={styles.fullDate}>7/22~7/25</Text>
+                    <Text color={colors.darkGreen} style={styles.fullDate}>{fullDate}</Text>
                 </HStack>
             </HStack>
             <FlatList
-                data={testdata}
+                style={{ paddingTop: 60, position: 'absolute', bottom: 0, height: 465 }}
+                data={data2Array}
                 renderItem={({ item, index }) => {
                     return <RenderItem item={item} index={index} navigation={navigation} />;
                 }}
                 showsVerticalScrollIndicator={false}
+                ListFooterComponent={renderFooter} // 將底部組件設置為列表的底部
             />
+
         </Box>
     );
 };
 
 const styles = StyleSheet.create({
+    input: {
+        height: 30,
+        fontSize: 16,
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
     title: {
         fontSize: 26,
-        // marginHorizontal: 20,
-        color: '#323232',
         fontWeight: '900',
     },
     locationName: {

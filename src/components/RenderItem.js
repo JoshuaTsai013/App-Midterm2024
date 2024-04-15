@@ -25,18 +25,21 @@ const RenderItem = ({ item, index, navigation }) => {
                     $dark-bg={colors.lightGreen} />
                 <Text
                     pl={15}
-                    fontSize={24}
+                    fontSize={20}
                     fontWeight='600'
                     color={colors.darkGreen}
-                >Day1</Text>
+                >{item.title}</Text>
                 <Text
-                    pt={7}
-                    pl={240}
+                    position='absolute'
+                    bottom={3}
+                    right={7}
                     fontSize={16}
                     fontWeight='600'
-                >7/22</Text>
+                >{item.date}</Text>
             </HStack>
             <Pressable
+                bgColor={colors.white}
+                shadowColor={colors.black}
                 style={styles.container}
                 onPress={() => {
                     navigation.navigate('PhotoDetailScreen', { item });
@@ -50,7 +53,7 @@ const RenderItem = ({ item, index, navigation }) => {
                     <Text color={colors.white} fontSize={13} pt={2} fontWeight='bold'>{item.location}</Text>
                 </HStack>
                 <Box style={styles.textContainer}>
-                    <Text pb={30} pl={12} pt={12} style={styles.content}>{item.content}</Text>
+                    <Text pb={30} pl={12} pt={12} color={colors.darkGray} style={styles.content}>{item.content}</Text>
                     <Pressable
                         position='absolute'
                         bottom={0}
@@ -70,12 +73,10 @@ export default RenderItem;
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        backgroundColor: '#fff',
         padding: 10,
         marginHorizontal: 10,
         marginBottom: 10,
         borderRadius: 20,
-        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -97,13 +98,8 @@ const styles = StyleSheet.create({
         flexShrink: 1,
     },
     content: {
-        color: '#323232',
         fontSize: 14,
         fontWeight: 'normal',
-    },
-    textLocation: {
-        color: '#323232',
-        fontSize: 18,
     },
     editButton: {
         width: 55,

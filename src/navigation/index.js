@@ -14,6 +14,7 @@ import { Divider, Center, Image, Box, Text, Pressable } from '@gluestack-ui/them
 import HomeScreen from '../screens/HomeScreen';
 import DetailScreen from '../screens/DetailScreen';
 import MapScreen from '../screens/MapScreen'
+import AddScreen from '../screens/AddScreen'
 import SettingScreen from '../screens/SettingScreen';
 import PhotoDetailScreen from '../screens/PhotoDetailScreen'
 import NullScreen from '../screens/NullScreen';
@@ -54,7 +55,7 @@ const CustomDrawerContent = (props) => {
                         color='#131313'
                         fontSize={24}
                         lineHeight={28}
-                    >May</Text>
+                    >wander</Text>
                 </Center>
             </Box>
             <Divider my="$2" />
@@ -143,8 +144,8 @@ const MyTabs = () => {
                 }}
             />
             <Tab.Screen
-                name="SettingsStack"
-                component={SettingsStack}
+                name="AddStack"
+                component={AddStack}
                 options={{
                     title: '',
                     headerShown: false,
@@ -195,44 +196,10 @@ const SettingsStack = ({ navigation }) => {
                     ),
                 }}
             />
-            <Stack.Screen
-                name="DisplaySetting"
-                component={SettingScreen}
-                options={{
-                    title: "Display",
-                    headerTitleStyle: {
-                        fontWeight: '400',
-                        fontSize: 20
-                    },
-                }}
-            />
         </Stack.Navigator>
     );
 }
-// const DetailStack = ({ navigation }) => {
-//     return (
-//         <Stack.Navigator>
-//             <Stack.Screen
-//                 name="DetailScreen"
-//                 component={DetailScreen}
-//                 options={{
-//                     headerShown: false,
-//                     presentation: 'transparentModal',
-//                     animation: 'fade'
-//                 }}
-//             />
-//             <Stack.Screen
-//                 name="PhotoDetailScreen"
-//                 component={PhotoDetailScreen}
-//                 options={{
-//                     headerShown: false,
-//                     presentation: 'transparentModal',
-//                     animation: 'fade'
-//                 }}
-//             />
-//         </Stack.Navigator>
-//     );
-// }
+
 const MapStack = ({ navigation }) => {
     return (
         <Stack.Navigator>
@@ -291,6 +258,44 @@ const HomeStack = ({ navigation }) => {
                             style={{}}
                         />
                     ),
+                }}
+            />
+            <Stack.Screen
+                name="Detail"
+                component={DetailScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+        </Stack.Navigator>
+    );
+}
+const AddStack = ({ navigation }) => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Add"
+                component={AddScreen}
+                options={{
+                    // title: null,
+                    // headerShown:false,
+                    // headerShadowVisible: false,
+                    // headerLeft: () => (
+                    //     <MaterialCommunityIcons
+                    //         name={'menu'}
+                    //         size={20}
+                    //         onPress={() => navigation.openDrawer()}
+                    //         style={{ marginRight: 20 }}
+                    //     />
+                    // ),
+                    // headerRight: () => (
+                    //     <MaterialCommunityIcons
+                    //         name="magnify"
+                    //         size={26}
+                    //         onPress={() => alert('查不到')}
+                    //         style={{}}
+                    //     />
+                    // ),
                 }}
             />
             <Stack.Screen

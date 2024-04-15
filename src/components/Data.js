@@ -9,6 +9,7 @@ export const data = [
     {
         id: 1,
         title: "探索台北",
+        date: "7/22-24",
         location: "台北市",
         image: require("../../image/CKS_MH.jpg"),
         data2: [

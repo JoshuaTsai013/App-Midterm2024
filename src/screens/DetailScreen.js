@@ -1,82 +1,146 @@
-import React from 'react';
-import { Linking, Image } from 'react-native';
-import StarList from '../components/StarList'
-import { HStack, Center, ScrollView, Box, Text, Pressable } from "@gluestack-ui/themed";
+import { View, FlatList, StyleSheet, Image, ScrollView, TextInput, Dimensions, Platform, useWindowDimensions } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import RenderItem from '../components/RenderItem';
+import { HStack, Center, Box, Text, Pressable, VStack, Input, InputField } from "@gluestack-ui/themed";
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useTheme } from '@react-navigation/native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome6'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-const DetailScreen = ({ route }) => {
-    const { title,
-        artist,
-        star,
-        url,
-        image,
-        description
-    } = route.params;
-    const buttontitle = `Buy Now for $${star}`
+const { width, height } = Dimensions.get('screen')
+
+const DetailScreen = ({ navigation, route }) => {
+    const { colors } = useTheme();
+    const { item } = route.params;
+    const [data2Array, setData2Array] = useState(item.data2 ? Object.values(item.data2) : [item]);
+    const lastDate = data2Array.slice(-1)[0];
+    const firstDate = data2Array[0];
+    const [fullDate, setfullDate] = useState(lastDate.date == firstDate.date ? lastDate.date : `${firstDate.date}~${lastDate.date}`);
+    const [title, setTitle] = useState(item.title);
+    const [location, setLocation] = useState(item.location);
+
+    const [toggle, setToggle] = useState(true);
+    const toggleFunction = () => {
+        setToggle(!toggle);
+    };
+    const renderFooter = () => {
+        return <Box h={100} />;
+    };
+    const titleChange = (value) => {
+        setTitle(value);
+    };
+    const locationChange = (value) => {
+        setLocation(value);
+    };
+
     return (
-        <Center bgColor="white" height="100%">
-            <ScrollView bgColor='#fff' w='100%' h='100%'>
-                <Center style={{}}>
-                    <Box mt="$5" style={{}}>
-                        <Image
-                            style={{
-                                height: 300,
-                                width: 210
-                            }}
-                            source={{
-                                uri: image
-                            }}
-                        />
-                    </Box>
-                    <Center mt="$5" style={{}}>
-                        <Text color='#131313'
-                            textAlign='center'
-                            fontSize={24}
-                            lineHeight={28}
-                        >{title}</Text>
-                        <Text color='#666666'
-                            textAlign='center'
-                            fontSize={14}
-                            fontWeight='400'
-                            lineHeight={16}
-                            mt={10}
-                        >{artist}</Text>
-                        <HStack mt={20}>
-                            <StarList star={star} size={20} />
-                            <Text fontSize={14}
-                                fontWeight='400'
-                                letterSpacing={1}
-                                pt={2}
-                                pl={5}
-                            >{star}.0/5.0</Text>
-                        </HStack>
-                        <Text mt={20}
-                            color='#131313'
-                            textAlign='center'
-                            fontSize={14}
-                            fontWeight='400'
-                            lineHeight={24}
-                        >{description}</Text>
-                    </Center>
-                    <Pressable mt={20}
-                        justifyContent="center"
-                        w={190}
-                        h={36}
-                        borderRadius={4}
-                        backgroundColor="#6200EE"
-                        onPress={() => Linking.openURL(url)}
-                    >
-                        <Text
-                            color="#fff"
-                            textAlign='center'
-                            fontSize={14}
-                            fontWeight='700'
-                            lineHeight={16}
-                            letterSpacing={1.2}
-                        >{buttontitle}</Text>
-                    </Pressable>
-                </Center>
-            </ScrollView>
-        </Center>
+        <Box style={styles.container}>
+            <Pressable
+                position='absolute'
+                top={60}
+                left={30}
+                w={40}
+                h={40}
+                backgroundColor='rgba(19,19,19,0.3)'
+                zIndex={99}
+                borderRadius={50}
+                alignItems='center'
+                justifyContent='center'
+                onPress={() => { navigation.goBack(); }}>
+                <MaterialIcons name='arrow-back-ios-new' color={colors.white} size={20} />
+            </Pressable>
+            <Pressable
+                position='absolute'
+                w={40}
+                h={40}
+                top={60}
+                right={30}
+                backgroundColor='rgba(19,19,19,0.3)'
+                borderRadius={50}
+                alignItems='center'
+                justifyContent='center'
+                zIndex={99}
+                onPress={() => toggleFunction()}>
+                {toggle ?
+                    <MaterialIcons name='bookmark-outline' color={colors.white} size={20} /> :
+                    <MaterialIcons name='bookmark' color={colors.white} size={20} />}
+            </Pressable>
+            <FlatList
+                horizontal
+                pagingEnabled
+                keyExtractor={item => item.id.toString()}
+                data={data2Array}
+                showsHorizontalScrollIndicator={false}
+                style={{ width, height:600 }}
+                renderItem={({ item }) => {
+                    return <Box style={{ width:width, height:'100%'}}>
+                        <Pressable
+                            onPress={() => {
+                                navigation.navigate('PhotoDetailScreen', { item });
+                            }}>
+                            <Image
+                                source={item.image}
+                                style={{ width: '100%', height:'100%', resizeMode: 'cover' }}
+                            />
+                        </Pressable>
+                    </Box>;
+                }}
+            />
+            <HStack w={width} height={80} paddingHorizontal={30} paddingTop={10} gap={80} bgColor={colors.white}  >
+                <VStack gap={10}>
+                    <Input h={30} w={200} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                        <InputField color={colors.black} value={title} onChangeText={titleChange} style={styles.title} />
+                    </Input>
+                    <HStack gap={0}>
+                        <MaterialIcons name='location-on' color={colors.darkGray} size={20} style={{ position: 'absolute', left: 10, zIndex: 99 }} />
+                        <Input h={20} w={100} ml={20} pb={1} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                            <InputField color={colors.darkGray} value={location} onChangeText={locationChange} style={styles.locationName} />
+                        </Input>
+                    </HStack>
+                </VStack>
+                <HStack gap={7} position='absolute' right={30} top={15}>
+                    <FontAwesome name='calendar' size={20} color={colors.darkGreen} />
+                    <Text color={colors.darkGreen} style={styles.fullDate}>{fullDate}</Text>
+                </HStack>
+            </HStack>
+            <FlatList
+                style={{ paddingTop: 0,width:width,height:700 }}
+                data={data2Array}
+                renderItem={({ item, index }) => {
+                    return <RenderItem item={item} index={index} navigation={navigation} />;
+                }}
+                showsVerticalScrollIndicator={false}
+                ListFooterComponent={renderFooter} // 將底部組件設置為列表的底部
+            />
+
+        </Box>
     );
-}
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: '900',
+    },
+    locationName: {
+        fontSize: 14,
+        paddingTop: 2,
+        fontWeight: '500',
+    },
+    Icon: {
+        width: 20,
+        height: 20,
+    },
+    fullDate: {
+        fontSize: 16,
+        paddingTop: 1,
+        fontWeight: '500',
+    }
+});
+
 export default DetailScreen;

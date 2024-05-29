@@ -9,10 +9,7 @@ import { data, region } from "../components/Data"
 
 const AddScreen = ({ navigation }) => {
     const { colors } = useTheme();
-    const [date, setDate] = useState("Enter Date");
-    const dateChange = (value) => {
-        setDate(value);
-    };
+    
     const [title, setTitle] = useState("Enter Title");
     const titleChange = (value) => {
         setTitle(value);
@@ -23,19 +20,11 @@ const AddScreen = ({ navigation }) => {
     };
 
     return (
-        <Box flex={1} p={15} pb={100} pt={40} bgColor={colors.white}>
-            {/* Date */}
-            <Box flex={1.2} mb={10} paddingHorizontal={60} borderRadius="50%" bgColor={colors.lightGreen} style={styles.shadow}>
-                <Center h="100%">
-                    <Input borderColor={colors.lightGreen} isDisabled={false} isInvalid={false} isReadOnly={false}>
-                        <Center h="100%">
-                            <InputField color={colors.white} value={date} onChangeText={dateChange} style={styles.input} />
-                        </Center>
-                    </Input>
-                </Center>
-            </Box>
+        
+        <Box flex={1} p={15} pb={100} pt={20} bgColor={colors.white}>
+            
             {/* Title */}
-            <Box flex={1.2} mb={10} paddingHorizontal={60} borderRadius="50%" bgColor={colors.darkGreen} style={styles.shadow}>
+            <Box flex={1.2} mb={10} paddingHorizontal={60} borderRadius="20%" bgColor={colors.darkGreen} style={styles.shadow}>
                 <Center h="100%">
                     <Input borderColor={colors.darkGreen} isDisabled={false} isInvalid={false} isReadOnly={false}>
                         <Center h="100%">
@@ -45,7 +34,7 @@ const AddScreen = ({ navigation }) => {
                 </Center>
             </Box>
             {/* Photo and Type */}
-            <Box flex={3} mb={10} borderRadius={30} style={styles.shadow}>
+            <Box flex={4} mb={10} borderRadius={30} style={styles.shadow}>
                 <HStack h="100%">
                     <Box flex={1} mr={20} borderRadius={30}>
                         <Image
@@ -72,47 +61,9 @@ const AddScreen = ({ navigation }) => {
                     </Box>
                 </HStack>
             </Box>
-            {/* Map */}
-            <Box flex={3} mb={10} borderRadius={30} bgColor={colors.darkGreen} style={styles.shadow}>
-                <MapView
-                    style={styles.map}
-                    provider={PROVIDER_GOOGLE}
-                    customMapStyle={MapViewStyle}
-                    initialRegion={region}
-                    showsUserLocation={true}
-                    region={{
-                        latitude: region.latitude,
-                        longitude: region.longitude,
-                        latitudeDelta: region.latitudeDelta,
-                        longitudeDelta: region.longitudeDelta
-                    }}>
-                    {data.map((marker, index) => {
-                        const scaleStyle = {
-                            transform: [
-                                {
-                                    scale: 0.3,
-                                },
-                            ],
-                        };
-                        return (
-                            <Marker
-                                coordinate={marker.coordinate}
-                                key={index}
-                            >
-                                <View style={styles.markerWrap}>
-                                    <Image
-                                        source={require('../../image/locationIcon.png')}
-                                        style={[styles.marker, scaleStyle]}
-                                        resizeMode="cover" />
-                                </View>
-                            </Marker>
-                        );
-                    })}
-                </MapView>
-
-            </Box>
+            
             {/* Text input */}
-            <Box flex={3} mb={10} borderRadius={30} p={20} bgColor={colors.lightGray} style={styles.shadow}>
+            <Box flex={2} mb={10} borderRadius={30} p={20} bgColor={colors.lightGray} style={styles.shadow}>
                 <Input borderColor={colors.lightGray} isDisabled={false} isInvalid={false} isReadOnly={false}>
                     <InputField color={colors.black} value={content} onChangeText={contentChange} style={styles.contentInput} />
                 </Input>

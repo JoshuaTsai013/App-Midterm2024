@@ -4,28 +4,30 @@ import { data, region } from "../components/Data"
 const NullScreen = ({ navigation }) => {
 
 
-   // useEffect(() => {
-   //    navigation.navigate('DetailScreen', { item: testItem });
-   // }, [])
+   useEffect(() => {
+      navigation.navigate('AddScreen');
+   }, [])
 
    return (
-      <Center
-      >
-        {data.map((testItem, testIndex) => (
+    <>
+    </>
+    //   <Center
+    //   >
+    //     {data.map((testItem, testIndex) => (
 
            
-                <Pressable
+    //             <Pressable
                     
-                    onPress={() => {
-                        navigation.navigate('AddScreen', { item: testItem });
-                    }}
-                >
-               <Text>alskdjhfaslkdfhj</Text>
-                </Pressable>
+    //                 onPress={() => {
+    //                     navigation.navigate('AddScreen', { item: testItem });
+    //                 }}
+    //             >
+    //            <Text>alskdjhfaslkdfhj</Text>
+    //             </Pressable>
                
-        ))}
+    //     ))}
    
-    </Center>
+    // </Center>
 
    );
 };

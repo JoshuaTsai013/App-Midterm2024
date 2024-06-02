@@ -282,14 +282,14 @@ const AddStack = ({}) => {
     return (
         
         <Stack.Navigator>
-            <Stack.Screen
+            {/* <Stack.Screen
                 name="NullScreen"
                 component={NullScreen}
                 
                 options={{
                     headerShown: false,
                 }}
-            />
+            /> */}
             <Stack.Screen
                 name="AddScreen"
                 component={AddScreen}
@@ -304,6 +304,7 @@ const AddStack = ({}) => {
                     
                 }}
             />
+            
         </Stack.Navigator>
     );
 }

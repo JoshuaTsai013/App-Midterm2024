@@ -6,8 +6,11 @@ import { useTheme } from '@react-navigation/native';
 // import { data, testdata, region } from "../components/Data"
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
 import { useSelector } from "react-redux";
-import testdata from '../json/Data.json'
-import images from '../../assets/image'; 
+import { useFocusEffect } from '@react-navigation/native';
+//import testdata from '../json/Data.json'
+import images from '../../assets/image';
+
+import { getStoredTripData } from '../components/Fs'
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -20,9 +23,30 @@ const HomeScreen = ({ navigation }) => {
     const [selectedFilters, setSelectedFilters] = useState([]);
     const [filteredItems, setFilteredItems] = useState(testdata);
     const [favoritesSelected, setFavoritesSelected] = useState(false);
+    const [testdata, setData] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const scale = useRef(new Animated.Value(0)).current;
     const cart = useSelector((state) => state.cart.cart);
+    useEffect(() => {
+        async function fetchData() {
+            const storedData = await getStoredTripData();
+            JSON.stringify(storedData);
+            setData(storedData);
+            setIsLoading(false); 
+        }
+        fetchData();
+    }, []);
+    //const data = JSON.stringify(getStoredTripData())
+    //setData(getStoredTripData())
+    //console.log("test_data___",typeof(testdata))
+    //console.log("test_data___",testdata)
+    //console.log("da_data___",typeof(dadata))
+    //console.log("da_data___",dadata)
+
+    
 
     const handleFilterButtonClick = (selectedCategory) => {
         if (selectedFilters.includes(selectedCategory)) {
@@ -64,6 +88,15 @@ const HomeScreen = ({ navigation }) => {
 
         setFilteredItems(tempItems);
     };
+    if (isLoading) {
+        return (
+          <Box>
+            <Center>
+            <Text>Loading...</Text>
+            </Center>
+          </Box>
+        );
+      }
 
     return (
         <Box>
@@ -164,7 +197,7 @@ const HomeScreen = ({ navigation }) => {
                                 }}
                             >
                                 <Image
-                                    source={images[testItem.image]}
+                                    source={{url: testItem.image}}
                                     style={styles.image}
                                     resizeMode="cover"
                                 />

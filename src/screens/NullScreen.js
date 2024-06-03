@@ -1,33 +1,31 @@
 import React, { useEffect } from 'react';
-import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
-import { data, region } from "../components/Data"
+import { useFocusEffect } from '@react-navigation/native';
+
 const NullScreen = ({ navigation }) => {
+   useFocusEffect(
+      React.useCallback(() => {
+         navigation.navigate('AddScreen');
+        // Code to run when the screen is focused (entered)
+        //console.log('Screen focused!');
+  
+        // Optional cleanup function when screen loses focus
+        return () => {
+          //console.log('Screen blurred!');
+        };
+      }, []) // Empty dependency array ensures this runs only once on mount
+    );
+  
+    // ... rest of your screen component
+  
 
-
-   useEffect(() => {
-      navigation.navigate('AddScreen');
-   }, [])
+   // useEffect(() => {
+   //    navigation.navigate('AddScreen');
+   // }, [])
 
    return (
     <>
     </>
-    //   <Center
-    //   >
-    //     {data.map((testItem, testIndex) => (
-
-           
-    //             <Pressable
-                    
-    //                 onPress={() => {
-    //                     navigation.navigate('AddScreen', { item: testItem });
-    //                 }}
-    //             >
-    //            <Text>alskdjhfaslkdfhj</Text>
-    //             </Pressable>
-               
-    //     ))}
-   
-    // </Center>
+    
 
    );
 };

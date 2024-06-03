@@ -33,7 +33,7 @@ const TopTabs = createMaterialTopTabNavigator();
 const Navigation = () => {
     return (
         <NavigationContainer theme={MyTheme}>
-            <MyTabs/>
+            <SupremeStack/>
         </NavigationContainer>
     );
 }
@@ -101,6 +101,38 @@ const MyDrawer = () => {
                 }}
             />
         </Drawer.Navigator>
+    );
+}
+
+const SupremeStack = ({}) => {
+    return (
+        
+        <Stack.Navigator>
+            <Stack.Screen
+                name="MyTabs"
+                component={MyTabs}
+                
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="AddScreen"
+                component={AddScreen}
+                
+                options={{
+                    title: null,
+                    headerShadowVisible: false,
+                    paddingLeft:50,
+                    headerLeft: () => (
+                        
+                        <Text fontSize={25} color='black' fontWeight='bold' ml={15}>新增日記</Text>
+                    ),
+                    
+                }}
+            />
+            
+        </Stack.Navigator>
     );
 }
 function MyTopTabs() {
@@ -187,8 +219,8 @@ const MyTabs = ({ navigation }) => {
                 })}
             />
             <Tab.Screen
-                name="AddStack"
-                component={AddStack}
+                name="NullScreen"
+                component={NullScreen}
                 options={{
                     title: '',
                     headerShown: false,
@@ -340,7 +372,8 @@ const AddStack = ({}) => {
                     headerShadowVisible: false,
                     paddingLeft:50,
                     headerLeft: () => (
-                        <Text size='2xl' color='black' style={{ paddingTop: 10 ,paddingLeft: 10}}>新增日記</Text>
+                        
+                        <Text fontSize={25} color='black' fontWeight='bold' ml={15}>新增日記</Text>
                     ),
                     
                 }}

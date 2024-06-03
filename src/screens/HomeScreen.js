@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
-import { StyleSheet, Image, ScrollView, Dimensions, Platform, _ScrollView } from 'react-native';
-
+import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, FlatList, Dimensions, Platform, _ScrollView, Animated, TouchableOpacity, Easing } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
-import { data, region } from "../components/Data"
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
-import { useFonts } from 'expo-font'
+// import { data, testdata, region } from "../components/Data"
+import FontAwesome from 'react-native-vector-icons/FontAwesome6'
+import { useSelector } from "react-redux";
+import testdata from '../json/Data.json'
+import images from '../../assets/image'; 
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -15,64 +16,141 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
-    const [fontsLoaded] = useFonts({
-        'Lugrasimo-Regular': require('../../assets/fonts/Lugrasimo-Regular.ttf')
-    })
-    if (!fontsLoaded) {
-        return undefined;
+    const [visible, setVisible] = useState(false);
+    const [selectedFilters, setSelectedFilters] = useState([]);
+    const [filteredItems, setFilteredItems] = useState(testdata);
+    const [favoritesSelected, setFavoritesSelected] = useState(false);
+
+    const scale = useRef(new Animated.Value(0)).current;
+    const cart = useSelector((state) => state.cart.cart);
+
+    const handleFilterButtonClick = (selectedCategory) => {
+        if (selectedFilters.includes(selectedCategory)) {
+            let filters = selectedFilters.filter((el) => el !== selectedCategory);
+            setSelectedFilters(filters);
+        } else {
+            setSelectedFilters([...selectedFilters, selectedCategory]);
+        }
+    };
+
+    const handleFavoritesClick = () => {
+        setFavoritesSelected(!favoritesSelected);
+    };
+
+    function resizeBox(to) {
+        to === 1 && setVisible(true);
+        Animated.timing(scale, {
+            toValue: to,
+            useNativeDriver: true,
+            duration: 200,
+            easing: Easing.linear,
+        }).start(() => to === 0 && setVisible(false));
     }
+
+    useEffect(() => {
+        filterItems();
+    }, [selectedFilters, favoritesSelected]);
+
+    const filterItems = () => {
+        let tempItems = [...testdata];
+
+        if (favoritesSelected) {
+            tempItems = tempItems.filter(item => cart.some(cartItem => cartItem.id === item.id));
+        }
+
+        if (selectedFilters.length > 0) {
+            tempItems = tempItems.filter(item => selectedFilters.includes(item.category));
+        }
+
+        setFilteredItems(tempItems);
+    };
 
     return (
         <Box>
+            <>
+                <Box w={40}
+                    h={40}
+                    borderRadius={100}
+                    bgColor={colors.lightGray}
+                    position='absolute'
+                    right={25}
+                    top={25}
+                    alignItems="center"
+                    justifyContent="center"
+                    zIndex={999}>
+                    <TouchableOpacity onPress={() => resizeBox(1)}>
+                        <MaterialIcons name='menu' size={20} />
+                    </TouchableOpacity>
+                </Box>
+                <Modal transparent visible={visible}>
+                    <SafeAreaView
+                        style={{ flex: 1 }}
+                        onTouchStart={() => resizeBox(0)}
+                    >
+                        <Animated.View style={[styles.popup, { transform: [{ scale }], }]}>
+                            <TouchableOpacity
+                                style={{ width: '100%', borderBottomWidth: 1, borderColor: colors.lightGray, borderRadius: 10 }}
+                                onPress={handleFavoritesClick}
+                            >
+                                <Box
+                                    bgColor={favoritesSelected ? colors.darkGreen : colors.white}
+                                    borderStartStartRadius={10}
+                                    borderStartEndRadius={10}
+                                >
+                                    <Text
+                                        h={40}
+                                        pt={12}
+                                        pl={15}
+                                        fontSize={14}
+                                        fontWeight="bold"
+                                        color={favoritesSelected ? colors.white : colors.darkGray}>我的珍藏</Text>
+                                    <Text
+                                        position="absolute"
+                                        right={17}
+                                        top={10}
+                                        color={favoritesSelected ? colors.white : colors.darkGray}>{cart.length}</Text>
+                                </Box>
+                            </TouchableOpacity>
+                            {Array.from(new Set(testdata.map(testItem => testItem.category))).map((category, index) => (
+                                <TouchableOpacity
+                                    style={{ width: '100%', borderBottomWidth: 1, borderColor: colors.lightGray, borderRadius: 10 }}
+                                    key={`filters-${index}`}
+                                    onPress={() => handleFilterButtonClick(category)}
+                                >
+                                    {
+                                        selectedFilters.includes(category)
+                                            ? <HStack>
+                                                <Text h={40} pt={12} pl={15} fontSize={14}>{category}</Text>
+                                                <Box position="absolute" right={15} top={10}>
+                                                    <FontAwesome name="check" size={20} />
+                                                </Box>
+                                            </HStack>
+                                            : <HStack>
+                                                <Text h={40} pt={12} pl={15} fontSize={14}>{category}</Text>
+                                            </HStack>
+                                    }
+                                </TouchableOpacity>
+                            ))}
+                        </Animated.View>
+                    </SafeAreaView>
+                </Modal>
+            </>
             <Box bgColor="white" height="100%" alignItems="center">
-                <Center h='15%' mb={10} bgColor={colors.white}>
-                    <Text color={colors.darkGreen} style={styles.title}>wander</Text>
-                </Center>
-
-                <Menu
-                    placement="bottom end"
-                    borderColor={colors.lightGray}
-                    borderWidth={1}
-                    w={100}
-                    h={100}
-                    trigger={({ ...triggerProps }) => {
-                        return (
-                            <Button
-                                w={35}
-                                h={40}
-                                borderRadius={100}
-                                bgColor={colors.lightGray}
-                                position='absolute'
-                                right={15}
-                                top={80}
-                                {...triggerProps}>
-                                <Icon as={MenuIcon} size="md" />
-                            </Button>
-                        );
-                    }}
-                >
-                    <MenuItem w='100%' h={30} key="Settings" textValue="Settings">
-                        <MenuItemLabel w='100%' h={30} size='sm'>
-                            Add
-                        </MenuItemLabel>
-                    </MenuItem>
-                    <MenuItem w='100%' h={30} key="Setti" textValue="Settings">
-                        <MenuItemLabel w='100%' h={30} size='sm'>
-                            All
-                        </MenuItemLabel>
-                    </MenuItem>
-                    <MenuItem w='100%' h={30} key="Add account" textValue="Add account">
-                        <MenuItemLabel w='100%' h={30} size='sm'>
-                            Favorites
-                        </MenuItemLabel>
-                    </MenuItem>
-                </Menu>
-
-
                 <ScrollView
-                  showsVerticalScrollIndicator={false}>
-                    {data.map((testItem, testIndex) => (
+                    showsVerticalScrollIndicator={false}
+                    style={{ paddingTop: 10 }}
+                >
+                    <Box h={40} m={15} pl={10} pt={5}>
+                        <Text w={300} fontSize={27} color={colors.black} numberOfLines={1} fontWeight="bold">
+                            {favoritesSelected
+                                ? '我的珍藏'
+                                : (selectedFilters.length === 0
+                                    ? '全部'
+                                    : `${selectedFilters.join(', ')}`)}
+                        </Text>
+                    </Box>
 
+                    {filteredItems.map((testItem, testIndex) => (
                         <HStack
                             alignItems='center'
                             bgColor={colors.white}
@@ -86,12 +164,12 @@ const HomeScreen = ({ navigation }) => {
                                 }}
                             >
                                 <Image
-                                    source={testItem.image}
+                                    source={images[testItem.image]}
                                     style={styles.image}
                                     resizeMode="cover"
                                 />
                             </Pressable>
-                            <VStack gap={5} style={styles.textContent}>
+                            <VStack gap={10} style={styles.textContent}>
                                 <Text
                                     color={colors.black}
                                     numberOfLines={1}
@@ -99,13 +177,12 @@ const HomeScreen = ({ navigation }) => {
                                 >{testItem.title}</Text>
                                 <HStack
                                     gap={5}
-                                    mt={20}
                                     ml={2}
                                 >
                                     <FontAwesome
-                                        name='calendar-o'
+                                        name='calendar'
                                         size={16}
-                                        color={colors.darkGreen}
+                                        color={colors.darkGray}
                                     />
                                     <Text
                                         ml={2}
@@ -116,10 +193,10 @@ const HomeScreen = ({ navigation }) => {
                                 </HStack>
                                 <HStack
                                     gap={5}
-                                    mt={20}
+                                    mt={10}
                                     ml={2}
                                 >
-                                    <FontAwesome6
+                                    <FontAwesome
                                         name='location-dot'
                                         size={16}
                                         color={colors.darkGreen}
@@ -131,24 +208,15 @@ const HomeScreen = ({ navigation }) => {
                                     >{testItem.location}</Text>
                                 </HStack>
                             </VStack>
-
                         </HStack>
                     ))}
-                    <Box height={80}>
-
-                    </Box>
+                    <Box h={100}></Box>
                 </ScrollView>
-                <Box height="90">
-
-                </Box>
             </Box>
-
-
         </Box>
-
-
     );
 };
+
 const styles = StyleSheet.create({
     title: {
         fontFamily: 'Lugrasimo-Regular',
@@ -168,11 +236,10 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5,
     },
     cardImage: {
         flex: 2.4,
-        marginLeft:15,
+        marginLeft: 15,
     },
     image: {
         width: "100%",
@@ -196,7 +263,20 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "bold",
     },
-
+    popup: {
+        width: 230,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        position: 'absolute',
+        top: 220,
+        right: 20,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+    },
 });
 
 export default HomeScreen;

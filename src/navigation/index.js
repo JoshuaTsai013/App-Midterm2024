@@ -7,6 +7,7 @@ import {
     DrawerContentScrollView,
     DrawerItemList,
 } from '@react-navigation/drawer';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -18,19 +19,21 @@ import AddScreen from '../screens/AddScreen'
 import SettingScreen from '../screens/SettingScreen';
 import PhotoDetailScreen from '../screens/PhotoDetailScreen'
 import NullScreen from '../screens/NullScreen';
+import SearchScreen from '../screens/SearchScreen'
 import MyTheme from '../theme';
 import Animated from 'react-native-reanimated';
 import { useFonts } from 'expo-font'
+import SearchBox from '../components/SearchBox';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-
+const TopTabs = createMaterialTopTabNavigator();
 
 const Navigation = () => {
     return (
         <NavigationContainer theme={MyTheme}>
-            <MyDrawer />
+            <MyTabs/>
         </NavigationContainer>
     );
 }
@@ -100,7 +103,29 @@ const MyDrawer = () => {
         </Drawer.Navigator>
     );
 }
-const MyTabs = () => {
+function MyTopTabs() {
+    const { colors } = useTheme();
+    return (
+        <TopTabs.Navigator
+            screenOptions={{
+                tabBarIndicatorStyle: {
+                    backgroundColor: colors.darkGreen, // 设置底线颜色
+                },
+            }}
+        >
+            <TopTabs.Screen
+                name="條列"
+                component={HomeStack}
+
+            />
+            <TopTabs.Screen
+                name="地圖"
+                component={MapStack}
+            />
+        </TopTabs.Navigator>
+    );
+}
+const MyTabs = ({ navigation }) => {
     const { colors } = useTheme();
     return (
         <Tab.Navigator
@@ -113,8 +138,8 @@ const MyTabs = () => {
                     left: 0,
                     right: 0,
                     elevation: 0, // 避免底部陰影
-                    backgroundColor: 'white', // 背景顏色
-                    borderTopWidth: 1, // 移除頂部邊框線
+                    backgroundColor: colors.white, // 背景顏色
+                    borderTopWidth: 0, // 移除頂部邊框線
                     height: 90, // Tab Bar 的高度
                 },
                 tabBarItemStyle: {
@@ -128,17 +153,38 @@ const MyTabs = () => {
         >
             <Tab.Screen
                 name="HomeStack"
-                component={HomeStack}
-                options={{
-                    headerShown: false,
+                component={MyTopTabs}
+                options={({ navigation })=>({
                     title: '',
                     tabBarIconStyle: {
                         marginLeft: 60,
                     },
+                    headerRight: () => (
+                        <Box mr={20}>
+                            <Pressable
+                            onPress={() => {
+                                navigation.navigate('SearchScreen');
+                            }}>
+                                <MaterialCommunityIcons
+                                    name='magnify'
+                                    size={26}
+                                    color="#000" />
+                            </Pressable>
+                        </Box>
+                    ),
+                    headerLeft: () => (
+                        <Text fontSize={25} color='black' fontWeight='bold' ml={30}>我的日記</Text>
+                    ),
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="home" color={color} size={30} />
                     ),
-                }}
+                    headerStyle: {
+                        borderBottomWidth: 0, // Remove the bottom line
+                        elevation: 0, // Remove the shadow on Android
+                        shadowOpacity: 0, // Remove the shadow on iOS
+                        height: 100,
+                    },
+                })}
             />
             <Tab.Screen
                 name="AddStack"
@@ -148,15 +194,15 @@ const MyTabs = () => {
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
                         <Box >
-                            <Ionicons position='absolute' zIndex={10} bottom={-10} left={-35} name="add-circle-sharp" color={colors.darkGreen} size={70} style={{ marginTop: -55 }} />
-                            <Box w={50} h={50} position='absolute' zIndex={0} borderRadius={50} bottom={0} left={-25} backgroundColor='#fff' />
+                            <MaterialCommunityIcons position='absolute' zIndex={10} borderRadius={50} bottom={4} left={-20.5}  name="camera" color={colors.white} size={35} style={{ marginTop: -55 }} />
+                            <Box w={64} h={64} position='absolute'zIndex={0} bottom={-10} left={-35} borderRadius={99} backgroundColor={colors.darkGreen} />
                         </Box>
                     ),
                 }}
             />
             <Tab.Screen
-                name="MapStack"
-                component={MapStack}
+                name="SettingsStack"
+                component={SettingsStack}
                 options={{
                     title: '',
                     tabBarIconStyle: {
@@ -164,7 +210,7 @@ const MyTabs = () => {
                     },
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <Ionicons name="map" color={color} size={26}/>
+                        <Ionicons name="map" color={color} size={26} />
                     ),
                 }}
             />
@@ -239,22 +285,17 @@ const HomeStack = ({ navigation }) => {
                 options={{
                     title: null,
                     headerShadowVisible: false,
-                    headerLeft: () => (
-                        <MaterialCommunityIcons
-                            name={'menu'}
-                            size={20}
-                            onPress={() => navigation.openDrawer()}
-                            style={{ marginRight: 20 }}
-                        />
-                    ),
-                    headerRight: () => (
-                        <MaterialCommunityIcons
-                            name="magnify"
-                            size={26}
-                            onPress={() => alert('查不到')}
-                            style={{}}
-                        />
-                    ),
+                    headerShown: false,
+
+                }}
+            />
+            <Stack.Screen
+                name="SearchScreen"
+                component={SearchScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
                 }}
             />
             <Stack.Screen

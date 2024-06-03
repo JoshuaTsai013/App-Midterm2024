@@ -117,7 +117,6 @@ const AddScreen = ({ navigation }) => {
                     <InputField color={colors.black} value={content} onChangeText={contentChange} style={styles.contentInput} />
                 </Input>
             </Box>
-
         </Box>
     );
 };

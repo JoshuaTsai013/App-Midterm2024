@@ -6,11 +6,15 @@ import MapViewStyle from '../json/MapViewStyle.json'
 import { UserLocation } from '../components/UserLocation'
 import { Marker } from 'react-native-maps';
 import { useTheme } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAP_API_KEY } from "../Api";
-import { data, region } from "../components/Data"
+import { region } from "../components/Data"
+import  testdata  from '../json/Data.json';
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
+import { useSelector } from "react-redux";
+import images from '../../assets/image'; 
+
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -24,41 +28,67 @@ const MapScreen = ({ navigation }) => {
     const [selectedLocation, setSelectedLocation] = useState(null); // 新增 selectedLocation 狀態來存儲選擇的位置
     const [selectedPlaceName, setSelectedPlaceName] = useState('');
     const [zoomRatio, setZoomRatio] = useState(1);
-    const [showScrollView, setShowScrollView] = useState(true);
+    const [selectedFilters, setSelectedFilters] = useState([]);
+    const [filteredItems, setFilteredItems] = useState(testdata);
+    const [highlightedIndex, setHighlightedIndex] = useState(null); // 新增
+    const [favoritesSelected, setFavoritesSelected] = useState(false);
 
-    const [data2Array, setData2Array] = useState([]);
+    const cart = useSelector((state) => state.cart.cart);
 
+    const handleFilterButtonClick = (selectedCategory) => {
+        if (selectedFilters.includes(selectedCategory)) {
+            let filters = selectedFilters.filter((el) => el !== selectedCategory);
+            setSelectedFilters(filters);
+
+        } else {
+            setSelectedFilters([...selectedFilters, selectedCategory]);
+        }
+    };
+
+    const handleFavoritesClick = () => {
+        setFavoritesSelected(!favoritesSelected);
+    };
+
+    useEffect(() => {
+        filterItems();
+    }, [selectedFilters, favoritesSelected]);
+
+    const filterItems = () => {
+        let tempItems = [...testdata];
+
+        if (favoritesSelected) {
+            tempItems = tempItems.filter(item => cart.some(cartItem => cartItem.id === item.id));
+        }
+
+        if (selectedFilters.length > 0) {
+            tempItems = tempItems.filter(item => selectedFilters.includes(item.category));
+        }
+
+        setFilteredItems(tempItems);
+    };
     const mapRef = useRef(null);
     const _scrollView = useRef(null);
     let mapIndex = 0;
     let mapAnimation = new Animated.Value(0);
 
     useEffect(() => {
-        // 在渲染完成後收集所有的 innerItem 到 data2Array
-        const newData2Array = [];
-        data.forEach((testItem) => {
-            if (testItem.data2) {
-                newData2Array.push(...Object.values(testItem.data2));
-            }
-        });
-        setData2Array(newData2Array);
-    }, []);
 
-    useEffect(() => {
         mapAnimation.addListener(({ value }) => {
-            let index = Math.floor(value / CARD_WIDTH + 0.3);
-            if (index >= data2Array.length) {
-                index = data2Array.length - 1;
+            let index = Math.floor(value / CARD_WIDTH + 0.2);
+            if (index >= testdata.length) {
+                index = testdata.length - 1;
             }
             if (index <= 0) {
                 index = 0;
             }
+            const correspondingIndex = testdata.findIndex((item) => item.id === filteredItems[index].id);
+            setHighlightedIndex(index);
             clearTimeout(regionTimeout);
 
             const regionTimeout = setTimeout(() => {
-                if (mapIndex !== index) {
-                    mapIndex = index;
-                    const { coordinate } = data2Array[index];
+                if (mapIndex !== correspondingIndex) {
+                    mapIndex = correspondingIndex;
+                    const { coordinate } = testdata[correspondingIndex];
                     mapRef.current.animateToRegion(
                         {
                             ...coordinate,
@@ -71,39 +101,12 @@ const MapScreen = ({ navigation }) => {
             }, 10);
         });
     });
-
-    async function moveToLocation(latitude, longitude) {
-        mapRef.current.animateToRegion({
-            latitude,
-            longitude,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
-        },
-            1000,
-        );
-        setSelectedLocation({ latitude, longitude });
-        setShowScrollView(false);
-    }
     const onRegionChangeComplete = (rgn) => {
         if (rgn.longitudeDelta > 0.02)
             setZoomRatio(0.02 / rgn.longitudeDelta);
         else
             setZoomRatio(1);
     }
-    const interpolations = data2Array.map((marker, index) => {
-        const inputRange = [
-            (index - 1) * CARD_WIDTH,
-            index * CARD_WIDTH,
-            (index + 1) * CARD_WIDTH,
-        ];
-        const scale = mapAnimation.interpolate({
-            inputRange,
-            outputRange: [1, 1.5, 1],
-            extrapolate: "clamp"
-        });
-        return { scale };
-
-    });
     const onMarkerPress = (mapEventData) => {
         const markerID = mapEventData._targetInst.return.key;
         let x = (markerID * CARD_WIDTH) + (markerID * 20);
@@ -114,33 +117,21 @@ const MapScreen = ({ navigation }) => {
     }
 
     return location?.latitude && (
+
         <Box alignItems='center' flex={1}>
-            <Box mt={60} w="80%" position='absolute' zIndex={10}>
-                <GooglePlacesAutocomplete
-                    placeholder='Search your memory'
-                    fetchDetails={true}
-                    onPress={(data, details = null) => {
-                        setSelectedPlaceName(details.name);
-                        console.log(JSON.stringify(details?.geometry?.location));
-                        moveToLocation(details.geometry.location.lat, details.geometry.location.lng);
-                    }}
-                    query={{
-                        key: GOOGLE_MAP_API_KEY,
-                        language: 'en',
-                    }}
-                    styles={{
-                        container: {
-                            borderRadius: 20
-                        },
-                        textInputContainer: {
-                            borderRadius: 20, // 設置文字輸入框容器的邊緣半徑為20像素，使邊緣變圓
-                        },
-                        textInput: {
-                            borderRadius: 20, // 設置文字輸入框的邊緣半徑為20像素，使邊緣變圓
-                        },
-                    }}
-                />
-            </Box>
+            {favoritesSelected ?
+                <Pressable
+                    backgroundColor={colors.darkGreen}
+                    style={styles.likeButton}
+                    onPress={handleFavoritesClick}>
+                    <MaterialIcons name='bookmark' color={colors.white} size={27} />
+                </Pressable> :
+                <Pressable
+                    backgroundColor={colors.white}
+                    style={styles.likeButton}
+                    onPress={handleFavoritesClick}>
+                    <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={27} />
+                </Pressable>}
             <MapView
                 ref={mapRef}
                 style={styles.map}
@@ -155,49 +146,52 @@ const MapScreen = ({ navigation }) => {
                     latitudeDelta: region.latitudeDelta,
                     longitudeDelta: region.longitudeDelta
                 }}>
-                {(zoomRatio > 0.14) && data2Array.map((marker, index) => {
-                    const scaleStyle = {
-                        transform: [
-                            {
-                                scale: interpolations[index].scale,
-                                // scale: 1,
-                            },
-                        ],
-                    };
+                {(zoomRatio > 0.14) && filteredItems.map((marker, index) => {
+                    const isFavorite = cart.some(cartItem => cartItem.id === marker.id);
                     return (
                         <Marker
                             coordinate={marker.coordinate}
                             key={index}
                             onPress={(e) => onMarkerPress(e)}
-                        >
-                            <Animated.View style={styles.markerWrap}>
-                                <Animated.Image
-                                    source={require('../../image/locationIcon.png')}
-                                    style={[styles.marker, scaleStyle]}
-                                    resizeMode="cover" />
-                            </Animated.View>
-                        </Marker>
+                        >{
+                                highlightedIndex === index ?
+                                    <Box style={{ zIndex: 999 }}>
+                                        <Image
+                                            source={require('../../image/speech-bubble.png')}
+                                            style={[{ width: 200 }, styles.highlightedMarker]} // 修改樣式
+                                        />
+                                        <HStack w={200} h={40} position='absolute' top={34} left={23} zIndex={999} alignItems='center'>
+                                            <Image
+                                                source={images[marker.image]}
+                                                style={styles.markerImage}
+                                                resizeMode='cover' />
+                                            <Text w={60} ml={10} fontSize={14} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
+                                            <Box position='absolute' right={40}>
+                                                {isFavorite ?
+                                                    <MaterialIcons name='bookmark' color={colors.darkGreen} size={20} /> :
+                                                    <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={20} />
+                                                }
+                                            </Box>
+                                        </HStack>
+                                    </Box> :
+                                    <Box>
+                                        <Image
+                                            source={require('../../image/speech-bubble.png')}
+                                            style={styles.marker} // 修改樣式
+                                            resizeMode="contain" />
+                                        <HStack w={120} h={30} gap={10} position='absolute' top={78} left={18} alignItems='center'>
+                                            <Image
+                                                source={images[marker.image]}
+                                                style={styles.markerImage}
+                                                resizeMode='cover' />
+                                            <Text w={50} fontSize={12} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
+                                        </HStack>
+                                    </Box>
+                            }</Marker>
                     );
                 })}
-                {selectedLocation && (
-                    <Marker
-                        coordinate={{
-                            latitude: selectedLocation.latitude,
-                            longitude: selectedLocation.longitude
-                        }}
-                        title={selectedPlaceName}
-                        onPress={() => setShowScrollView(true)}
-                    >
-                        <Animated.View style={styles.markerWrap}>
-                            <Animated.Image
-                                source={require('../../image/locationIcon.png')}
-                                style={[styles.marker, { transform: [{ scale: 1.5 }] }]}
-                                resizeMode="center" />
-                        </Animated.View>
-                    </Marker>
-                )}
             </MapView>
-            {showScrollView && (<Animated.ScrollView
+            <Animated.ScrollView
                 ref={_scrollView}
                 horizontal
                 pagingEnabled
@@ -213,7 +207,7 @@ const MapScreen = ({ navigation }) => {
                     right: SPACING_FOR_CARD_INSET
                 }}
                 contentContainerStyle={{
-                    paddingHorizontal: Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0
+                    marginleft: 0
                 }}
                 onScroll={Animated.event(
                     [
@@ -228,62 +222,94 @@ const MapScreen = ({ navigation }) => {
                     { useNativeDriver: true }
                 )}
             >
-                {data.map((testItem, testIndex) => (
-                    <React.Fragment key={testIndex}>
-                        {testItem.data2 && testItem.data2.map((innerItem, innerIndex) => (
+                {filteredItems.map((testItem, testIndex) => (
+                    <HStack
+                        alignItems='center'
+                        bgColor={colors.white}
+                        borderColor={colors.lightGray}
+                        style={styles.card}
+                        key={`items-${testIndex}`}>
+                        <VStack gap={10} style={styles.textContent}>
+                            <Text
+                                color={colors.black}
+                                numberOfLines={1}
+                                style={styles.cardtitle}
+                            >{testItem.title}</Text>
                             <HStack
-                                alignItems='center'
-                                bgColor={colors.white}
-                                borderColor={colors.lightGray}
-                                style={styles.card}
-                                key={`${testIndex}_${innerIndex}`}>
-                                <VStack gap={5} style={styles.textContent}>
-                                    <Text
-                                        color={colors.black}
-                                        numberOfLines={1}
-                                        style={styles.cardtitle}
-                                    >{testItem.title}</Text>
-                                    <Text
-                                        ml={2}
-                                        color={colors.darkGray}
-                                        numberOfLines={1}
-                                        style={styles.cardDate}
-                                    >{innerItem.date}</Text>
-                                    <HStack
-                                        gap={5}
-                                        mt={20}
-                                        ml={2}
-                                    >
-                                        <FontAwesome
-                                            name='location-dot'
-                                            size={16}
-                                            color={colors.darkGreen}
-                                        />
-                                        <Text
-                                            color={colors.darkGreen}
-                                            numberOfLines={1}
-                                            style={styles.cardLocation}
-                                        >{innerItem.location}</Text>
-                                    </HStack>
-                                </VStack>
-                                <Pressable
-                                    style={styles.cardImage}
-                                    onPress={() => {
-                                        navigation.navigate('DetailScreen', { item: testItem });
-                                    }}
-                                >
-                                    <Image
-                                        source={innerItem.image}
-                                        style={styles.image}
-                                        resizeMode="cover"
-                                    />
-                                </Pressable>
+                                gap={5}
+                                ml={2}
+                            >
+                                <FontAwesome
+                                    name='calendar'
+                                    size={16}
+                                    color={colors.darkGray}
+                                />
+                                <Text
+                                    ml={2}
+                                    color={colors.darkGray}
+                                    numberOfLines={1}
+                                    style={styles.cardDate}
+                                >{testItem.date}</Text>
                             </HStack>
-                        ))}
-                    </React.Fragment>
+                            <HStack
+                                gap={5}
+                                mt={10}
+                                ml={2}
+                            >
+                                <FontAwesome
+                                    name='location-dot'
+                                    size={16}
+                                    color={colors.darkGreen}
+                                />
+                                <Text
+                                    color={colors.darkGreen}
+                                    numberOfLines={1}
+                                    style={styles.cardLocation}
+                                >{testItem.location}</Text>
+                            </HStack>
+                        </VStack>
+                        <Pressable
+                            style={styles.cardImage}
+                            onPress={() => {
+                                navigation.navigate('DetailScreen', { item: testItem });
+                            }}
+                        >
+                            <Image
+                                source={images[testItem.image]}
+                                style={styles.image}
+                                resizeMode="cover"
+                            />
+                        </Pressable>
+                    </HStack>
                 ))}
-            </Animated.ScrollView>)}
-        </Box>
+            </Animated.ScrollView>
+            <ScrollView
+                horizontal
+                scrollEventThrottle={1}
+                showsHorizontalScrollIndicator={false}
+                height={50}
+                style={styles.chipsScrollView}>
+                {Array.from(new Set(testdata.map(testItem => testItem.category))).map((category, index) => (
+                    <Pressable
+                        onPress={() => handleFilterButtonClick(category)}
+                        style={styles.chipsItem}
+                        bgColor={
+                            selectedFilters.includes(category)
+                                ? colors.darkGreen
+                                : colors.white
+                        }
+                        key={`filters-${index}`}
+                    >
+                        <Text fontSize={12} color={
+                            selectedFilters.includes(category)
+                                ? colors.white
+                                : colors.black
+                        }>{category}</Text>
+                    </Pressable>
+                ))}
+                <Box w={30} />
+            </ScrollView>
+        </Box >
     );
 }
 
@@ -301,16 +327,21 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         paddingVertical: 10,
-
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
     },
     card: {
-        elevation: 2,
         borderRadius: 20,
         borderWidth: 0.2,
         marginHorizontal: 10,
         height: CARD_HEIGHT,
         width: CARD_WIDTH,
         overflow: "hidden",
+
     },
     cardImage: {
         flex: 2.4,
@@ -338,16 +369,64 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "bold",
     },
-    markerWrap: {
-        alignItems: "center",
-        justifyContent: "center",
-        width: 50,
-        height: 50,
+    markerImage: {
+        width: '30%',
+        height: '100%',
     },
     marker: {
-        width: 30,
-        height: 30,
+        height: 200,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
     },
+    highlightedMarker: {
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+    },
+    chipsScrollView: {
+        position: 'absolute',
+        top: 20,
+        paddingHorizontal: 30,
+    },
+    chipsItem: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        height: 30,
+        marginRight: 10,
+        paddingHorizontal: 20,
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+    },
+    likeButton: {
+        position: 'absolute',
+        width: 45,
+        height: 45,
+        top: 70,
+        right: 20,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 99,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+    }
+
 });
 
 export default MapScreen;

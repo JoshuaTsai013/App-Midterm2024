@@ -6,6 +6,8 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import MapViewStyle from '../json/MapViewStyle.json'
 import { Marker } from 'react-native-maps';
 import { data, region } from "../components/Data"
+//import { storeImageFile } from "../components/Fs"
+
 import * as ImagePicker from "expo-image-picker"
 import BlankPic from "../../image/BlankPic.png"
 const DEFAULT_IMAGE = Image.resolveAssetSource(BlankPic).uri;
@@ -13,16 +15,17 @@ const DEFAULT_IMAGE = Image.resolveAssetSource(BlankPic).uri;
 
 const AddScreen = ({ navigation }) => {
     const { colors } = useTheme();
-
+    //store Title
     const [title, setTitle] = useState("Enter Title");
     const titleChange = (value) => {
         setTitle(value);
     };
+    //store content
     const [content, setContent] = useState("Enter Memories");
     const contentChange = (value) => {
         setContent(value);
     };
-
+    //open camera and upload Image
     const [ImageUrl, setImageUrl] = useState(DEFAULT_IMAGE);
 
     const uploadImage = async () => {
@@ -35,22 +38,20 @@ const AddScreen = ({ navigation }) => {
         } catch (error) {
             alert("upload fail")
         }
-
-
-
     };
 
-    const saveImage = async (image) => {
+    const saveImage = async (imageUri) => {
         try {
-            
-            setImageUrl(image);
-            
+
+            setImageUrl(imageUri);
+            //let storedUrl = storeImageFile(imageUri);
+            console.log("stored url:",storedUrl)
         } catch (error) {
 
         }
     }
 
-
+    //aaaaaaaaaaaaa
     return (
         <Box flex={1} p={15} pb={20} pt={20} bgColor={colors.white}>
             {/* Title */}
@@ -67,17 +68,18 @@ const AddScreen = ({ navigation }) => {
             <Box flex={6} mb={10} borderRadius={30} style={styles.shadow}>
                 <Pressable onPress={() => {
                     //console.log(typeof(ImageUrl));
-                    uploadImage();
                     console.log(ImageUrl);
+                    uploadImage();
+
                 }}>
                     <Image
-                        source={{url:ImageUrl}}
+                        source={{ url: ImageUrl }}
                         //source={{url:DEFAULT_IMAGE}}
                         style={styles.image}
                         resizeMode="cover"
                     />
                 </Pressable>
-                
+
             </Box>
             {/* {Location} */}
             <HStack>

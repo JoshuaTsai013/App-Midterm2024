@@ -3,17 +3,19 @@ import { View, StyleSheet, Image, ScrollView, Animated, Dimensions, Platform, _S
 import { HStack, Center, Box, Text, Pressable, VStack } from "@gluestack-ui/themed";
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import MapViewStyle from '../json/MapViewStyle.json'
+import MapViewStyleTwo from '../json/MapViewStyleTwo.json'
 import { UserLocation } from '../components/UserLocation'
 import { Marker } from 'react-native-maps';
 import { useTheme } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { GOOGLE_MAP_API_KEY } from "../Api";
+// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+// import { GOOGLE_MAP_API_KEY } from "../Api";
 import { region } from "../components/Data"
-import  testdata  from '../json/Data.json';
+import testdata from '../json/Data.json';
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
 import { useSelector } from "react-redux";
-import images from '../../assets/image'; 
+import { selectColorMode } from "../Redux/cartReducer";
+import images from '../../assets/image';
 
 
 const { width, height } = Dimensions.get("window");
@@ -34,6 +36,7 @@ const MapScreen = ({ navigation }) => {
     const [favoritesSelected, setFavoritesSelected] = useState(false);
 
     const cart = useSelector((state) => state.cart.cart);
+    const colorMode = useSelector(selectColorMode);
 
     const handleFilterButtonClick = (selectedCategory) => {
         if (selectedFilters.includes(selectedCategory)) {
@@ -132,65 +135,126 @@ const MapScreen = ({ navigation }) => {
                     onPress={handleFavoritesClick}>
                     <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={27} />
                 </Pressable>}
-            <MapView
-                ref={mapRef}
-                style={styles.map}
-                provider={PROVIDER_GOOGLE}
-                customMapStyle={MapViewStyle}
-                initialRegion={region}
-                showsUserLocation={true}
-                onRegionChangeComplete={onRegionChangeComplete}
-                region={{
-                    latitude: region.latitude,
-                    longitude: region.longitude,
-                    latitudeDelta: region.latitudeDelta,
-                    longitudeDelta: region.longitudeDelta
-                }}>
-                {(zoomRatio > 0.14) && filteredItems.map((marker, index) => {
-                    const isFavorite = cart.some(cartItem => cartItem.id === marker.id);
-                    return (
-                        <Marker
-                            coordinate={marker.coordinate}
-                            key={index}
-                            onPress={(e) => onMarkerPress(e)}
-                        >{
-                                highlightedIndex === index ?
-                                    <Box style={{ zIndex: 999 }}>
-                                        <Image
-                                            source={require('../../image/speech-bubble.png')}
-                                            style={[{ width: 200 }, styles.highlightedMarker]} // 修改樣式
-                                        />
-                                        <HStack w={200} h={40} position='absolute' top={34} left={23} zIndex={999} alignItems='center'>
+            {colorMode == "light" ?
+                <MapView
+                    ref={mapRef}
+                    style={styles.map}
+                    provider={PROVIDER_GOOGLE}
+                    customMapStyle={MapViewStyle}
+                    initialRegion={region}
+                    showsUserLocation={true}
+                    onRegionChangeComplete={onRegionChangeComplete}
+                    region={{
+                        latitude: region.latitude,
+                        longitude: region.longitude,
+                        latitudeDelta: region.latitudeDelta,
+                        longitudeDelta: region.longitudeDelta
+                    }}>
+                    {(zoomRatio > 0.14) && filteredItems.map((marker, index) => {
+                        const isFavorite = cart.some(cartItem => cartItem.id === marker.id);
+                        return (
+                            <Marker
+                                coordinate={marker.coordinate}
+                                key={index}
+                                onPress={(e) => onMarkerPress(e)}
+                            >{
+                                    highlightedIndex === index ?
+                                        <Box style={{ zIndex: 999 }}>
                                             <Image
-                                                source={images[marker.image]}
-                                                style={styles.markerImage}
-                                                resizeMode='cover' />
-                                            <Text w={60} ml={10} fontSize={14} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
-                                            <Box position='absolute' right={40}>
-                                                {isFavorite ?
-                                                    <MaterialIcons name='bookmark' color={colors.darkGreen} size={20} /> :
-                                                    <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={20} />
-                                                }
-                                            </Box>
-                                        </HStack>
-                                    </Box> :
-                                    <Box>
-                                        <Image
-                                            source={require('../../image/speech-bubble.png')}
-                                            style={styles.marker} // 修改樣式
-                                            resizeMode="contain" />
-                                        <HStack w={120} h={30} gap={10} position='absolute' top={78} left={18} alignItems='center'>
+                                                source={require('../../image/speech-bubble.png')}
+                                                style={[{ width: 200 }, styles.highlightedMarker]} // 修改樣式
+                                            />
+                                            <HStack w={200} h={40} position='absolute' top={34} left={23} zIndex={999} alignItems='center'>
+                                                <Image
+                                                    source={images[marker.image]}
+                                                    style={styles.markerImage}
+                                                    resizeMode='cover' />
+                                                <Text w={60} ml={10} fontSize={14} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
+                                                <Box position='absolute' right={40}>
+                                                    {isFavorite ?
+                                                        <MaterialIcons name='bookmark' color={colors.darkGreen} size={20} /> :
+                                                        <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={20} />
+                                                    }
+                                                </Box>
+                                            </HStack>
+                                        </Box> :
+                                        <Box>
                                             <Image
-                                                source={images[marker.image]}
-                                                style={styles.markerImage}
-                                                resizeMode='cover' />
-                                            <Text w={50} fontSize={12} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
-                                        </HStack>
-                                    </Box>
-                            }</Marker>
-                    );
-                })}
-            </MapView>
+                                                source={require('../../image/speech-bubble.png')}
+                                                style={styles.marker} // 修改樣式
+                                                resizeMode="contain" />
+                                            <HStack w={120} h={30} gap={10} position='absolute' top={78} left={18} alignItems='center'>
+                                                <Image
+                                                    source={images[marker.image]}
+                                                    style={styles.markerImage}
+                                                    resizeMode='cover' />
+                                                <Text w={50} fontSize={12} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
+                                            </HStack>
+                                        </Box>
+                                }</Marker>
+                        );
+                    })}
+                </MapView>
+                : <MapView
+                    ref={mapRef}
+                    style={styles.map}
+                    provider={PROVIDER_GOOGLE}
+                    customMapStyle={MapViewStyleTwo}
+                    initialRegion={region}
+                    showsUserLocation={true}
+                    onRegionChangeComplete={onRegionChangeComplete}
+                    region={{
+                        latitude: region.latitude,
+                        longitude: region.longitude,
+                        latitudeDelta: region.latitudeDelta,
+                        longitudeDelta: region.longitudeDelta
+                    }}>
+                    {(zoomRatio > 0.14) && filteredItems.map((marker, index) => {
+                        const isFavorite = cart.some(cartItem => cartItem.id === marker.id);
+                        return (
+                            <Marker
+                                coordinate={marker.coordinate}
+                                key={index}
+                                onPress={(e) => onMarkerPress(e)}
+                            >{
+                                    highlightedIndex === index ?
+                                        <Box style={{ zIndex: 999 }}>
+                                            <Image
+                                                source={require('../../image/speech-bubble.png')}
+                                                style={[{ width: 200 }, styles.highlightedMarker]} // 修改樣式
+                                            />
+                                            <HStack w={200} h={40} position='absolute' top={34} left={23} zIndex={999} alignItems='center'>
+                                                <Image
+                                                    source={images[marker.image]}
+                                                    style={styles.markerImage}
+                                                    resizeMode='cover' />
+                                                <Text w={60} ml={10} fontSize={14} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
+                                                <Box position='absolute' right={40}>
+                                                    {isFavorite ?
+                                                        <MaterialIcons name='bookmark' color={colors.darkGreen} size={20} /> :
+                                                        <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={20} />
+                                                    }
+                                                </Box>
+                                            </HStack>
+                                        </Box> :
+                                        <Box>
+                                            <Image
+                                                source={require('../../image/speech-bubble.png')}
+                                                style={styles.marker} // 修改樣式
+                                                resizeMode="contain" />
+                                            <HStack w={120} h={30} gap={10} position='absolute' top={78} left={18} alignItems='center'>
+                                                <Image
+                                                    source={images[marker.image]}
+                                                    style={styles.markerImage}
+                                                    resizeMode='cover' />
+                                                <Text w={50} fontSize={12} numberOfLines={1} overflow='hidden' >{marker.title}</Text>
+                                            </HStack>
+                                        </Box>
+                                }</Marker>
+                        );
+                    })}
+                </MapView>}
+
             <Animated.ScrollView
                 ref={_scrollView}
                 horizontal

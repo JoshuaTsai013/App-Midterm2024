@@ -40,12 +40,15 @@ export const cartSlice = createSlice({
       } else {
         itemInCart.quantity--;
       }
-
-    }
+    },
+    toggleColorMode: (state) => {
+      state.colorMode=state.colorMode==='light'?'dark':'light';
+    },
   }
 });
 
 
-export const { addToCart, removeFromCart, incrementQuantity, decrementQuantity ,addToFavorite,removeFromFavorite} = cartSlice.actions;
+export const { addToCart, removeFromCart, incrementQuantity, decrementQuantity ,addToFavorite,removeFromFavorite,toggleColorMode} = cartSlice.actions;
+export const selectColorMode = (state) =>state.cart.colorMode;
 
 export default cartSlice.reducer;

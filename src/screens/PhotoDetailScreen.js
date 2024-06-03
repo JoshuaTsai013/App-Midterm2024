@@ -8,6 +8,8 @@ import { FadeInLeft } from 'react-native-reanimated';
 import ActionSheet from 'react-native-actionsheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { PinchGestureHandler, State } from 'react-native-gesture-handler';
+import { useSelector } from "react-redux";
+import { selectColorMode } from "../Redux/cartReducer";
 import images from '../../assets/image'; 
 
 
@@ -15,6 +17,8 @@ export default function PhotoDetailScreen({ navigation, route }) {
    const { colors } = useTheme();
    const { item } = route.params;
    const { width } = useWindowDimensions();
+
+   const colorMode = useSelector(selectColorMode);
    const toggleFunction = () => {
       setToggle(!toggle);
    };
@@ -46,14 +50,9 @@ export default function PhotoDetailScreen({ navigation, route }) {
    }
 
    return (
-      <Box w={width} bgColor={colors.white} style={styles.container}>
-         {/* <Pressable position='absolute' top={70} right={30} onPress={showActionSheet}>
-            <Image
-               source={require('../../image/actionButton.png')}
-               style={styles.actionButton} />
-         </Pressable> */}
+      <Box w={width} bg={colorMode == "light" ? colors.white : colors.lightBlack} style={styles.container}>
          <Pressable position='absolute' top={70} left={30} onPress={() => { navigation.goBack(); }}>
-            <MaterialIcons name='arrow-back-ios-new' color={colors.darkGreen} size={22} />
+            <MaterialIcons name='arrow-back-ios-new' color={colorMode == "light" ? colors.darkGreen : colors.lightGreen} size={22} />
          </Pressable>
          <PinchGestureHandler
          onGestureEvent={this.onZoomEventFunction}
@@ -61,19 +60,6 @@ export default function PhotoDetailScreen({ navigation, route }) {
             <Animated.Image source={images[item.image]} style={{width:'100%',height:'50%',transform:[{scale:this.scale}]}} />
 
          </PinchGestureHandler>
-         {/* <Animated.Text style={styles.text} entering={FadeInLeft.duration(700)}>
-            {item.note}
-         </Animated.Text>
-         <ActionSheet
-            ref={actionSheet}
-            title='which do you want'
-            options={optionArray}
-            cancelButtonIndex={2}
-            destructiveButtonIndex={0}
-            onPress={(index) => (
-               index === 0 ? alert(optionArray[index]) : null
-            )}
-         /> */}
       </Box >
    )
 }

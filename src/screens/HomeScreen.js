@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
-import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, FlatList, Dimensions, Platform, _ScrollView, Animated, TouchableOpacity, Easing } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, useColorScheme, Dimensions, _ScrollView, Animated, TouchableOpacity, Easing } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 // import { data, testdata, region } from "../components/Data"
 import FontAwesome from 'react-native-vector-icons/FontAwesome6'
 import { useSelector } from "react-redux";
+import { selectColorMode } from "../Redux/cartReducer";
 import testdata from '../json/Data.json'
-import images from '../../assets/image'; 
+import images from '../../assets/image';
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -16,6 +17,7 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
+    const colorMode =useSelector(selectColorMode);
     const [visible, setVisible] = useState(false);
     const [selectedFilters, setSelectedFilters] = useState([]);
     const [filteredItems, setFilteredItems] = useState(testdata);
@@ -135,13 +137,13 @@ const HomeScreen = ({ navigation }) => {
                     </SafeAreaView>
                 </Modal>
             </>
-            <Box bgColor="white" height="100%" alignItems="center">
+            <Box bg={colorMode == "light" ? colors.white : colors.lightBlack} height="100%" alignItems="center">
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingTop: 10 }}
                 >
                     <Box h={40} m={15} pl={10} pt={5}>
-                        <Text w={300} fontSize={27} color={colors.black} numberOfLines={1} fontWeight="bold">
+                        <Text w={300} fontSize={27} color={colorMode == "light" ? colors.black : colors.white} numberOfLines={1} fontWeight="bold">
                             {favoritesSelected
                                 ? '我的珍藏'
                                 : (selectedFilters.length === 0

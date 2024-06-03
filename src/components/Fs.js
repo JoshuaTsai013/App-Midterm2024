@@ -47,21 +47,7 @@ import * as FileSystem from 'expo-file-system';
         }
     }
 
-    async function storeImageFile(imageUri) {
-        try {
-            const filename = 'image.jpg'; // Adjust the extension if needed (e.g., '.png')
-            const fileUri = FileSystem.documentDirectory + filename;
-
-            // If the image is from the camera or photo library, get its local URI
-            const localUri = await FileSystem.downloadAsync(imageUri, fileUri);
-
-            console.log('Image file saved successfully!', localUri.uri);
-            return localUri.uri;
-        } catch (error) {
-            console.error('Error storing image file:', error);
-            throw error;
-        }
-    }
+    
     async function updateFormData(newData) {
         const filename = 'formData.json';
         const fileUri = FileSystem.documentDirectory + filename;
@@ -99,4 +85,4 @@ import * as FileSystem from 'expo-file-system';
         }
     }
       
-export {handleFormSubmission,storeFormData,storeImageFile,updateFormData,logStoredJSONFile};
+export {handleFormSubmission,storeFormData,updateFormData,logStoredJSONFile};

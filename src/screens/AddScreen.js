@@ -12,6 +12,8 @@ import * as ImagePicker from "expo-image-picker"
 import BlankPic from "../../image/BlankPic.png"
 const DEFAULT_IMAGE = Image.resolveAssetSource(BlankPic).uri;
 
+import * as FileSystem from 'expo-file-system';
+
 
 const AddScreen = ({ navigation }) => {
     const { colors } = useTheme();
@@ -28,28 +30,47 @@ const AddScreen = ({ navigation }) => {
     //open camera and upload Image
     const [ImageUrl, setImageUrl] = useState(DEFAULT_IMAGE);
 
-    const uploadImage = async () => {
+    async function storeImageFile() {
         try {
-            await ImagePicker.requestCameraPermissionsAsync();
-            let result = await ImagePicker.launchCameraAsync({ aspect: [3, 4], quality: 1 });
-            if (!result.canceled) {
-                await saveImage(result.assets[0].uri)
+          // 1. Request Permissions (Camera and Camera Roll)
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Sorry, we need camera permissions to take a photo!');
+            return;
+          }
+          // 2. Launch Camera
+          const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+      
+          if (!result.canceled) {
+            // 3. Process Camera Image
+            const imageUri = result.assets[0].uri;
+            const filename = `image_${Date.now()}.jpg`;
+            const fileDestination = FileSystem.documentDirectory + filename;
+      
+            // Option A: Copy directly if URI is a file path
+            if (imageUri.startsWith('file://')) {
+              await FileSystem.copyAsync({ from: imageUri, to: fileDestination });
+            } else {
+              // Option B: Download if URI is not a file path
+              await FileSystem.downloadAsync(imageUri, fileDestination);
             }
+      
+            console.log('Image file saved successfully!', fileDestination);
+            //return fileDestination; // Return the saved file path
+            setImageUrl(fileDestination)
+          }
         } catch (error) {
-            alert("upload fail")
+          console.error('Error storing image file:', error);
+          throw error;
         }
-    };
-
-    const saveImage = async (imageUri) => {
-        try {
-
-            setImageUrl(imageUri);
-            //let storedUrl = storeImageFile(imageUri);
-            console.log("stored url:",storedUrl)
-        } catch (error) {
-
-        }
-    }
+      }
+      
+      
 
     //aaaaaaaaaaaaa
     return (
@@ -69,7 +90,7 @@ const AddScreen = ({ navigation }) => {
                 <Pressable onPress={() => {
                     //console.log(typeof(ImageUrl));
                     console.log(ImageUrl);
-                    uploadImage();
+                    storeImageFile();
 
                 }}>
                     <Image

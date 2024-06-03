@@ -8,10 +8,11 @@ import {
     DrawerItemList,
 } from '@react-navigation/drawer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import { Dimensions} from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { Divider, Center, Image, Box, Text, Pressable } from '@gluestack-ui/themed';
+import { Divider, Center, Image, Box, Text, Pressable, HStack } from '@gluestack-ui/themed';
 import HomeScreen from '../screens/HomeScreen';
 import DetailScreen from '../screens/DetailScreen';
 import MapScreen from '../screens/MapScreen'
@@ -21,9 +22,10 @@ import PhotoDetailScreen from '../screens/PhotoDetailScreen'
 import NullScreen from '../screens/NullScreen';
 import SearchScreen from '../screens/SearchScreen'
 import MyTheme from '../theme';
-import Animated from 'react-native-reanimated';
 import { useFonts } from 'expo-font'
-import SearchBox from '../components/SearchBox';
+import ColorModeBtn from "../components/ColorModeBtn";
+import { useSelector } from "react-redux";
+import { selectColorMode } from "../Redux/cartReducer";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -137,12 +139,20 @@ const SupremeStack = ({}) => {
 }
 function MyTopTabs() {
     const { colors } = useTheme();
+    const colorMode = useSelector(selectColorMode);
+    // bg={colorMode == "light" ? colors.white : colors.lightBlack}
     return (
         <TopTabs.Navigator
             screenOptions={{
-                tabBarIndicatorStyle: {
-                    backgroundColor: colors.darkGreen, // 设置底线颜色
-                },
+                tabBarStyle: {
+                    backgroundColor: colorMode == "light" ? colors.white : colors.lightBlack, // 设置 tabBar 的背景色
+                  },
+                  tabBarIndicatorStyle: {
+                    backgroundColor: colorMode == "light" ? colors.darkGreen : colors.lightGreen, // 设置底线颜色
+                  },
+                  tabBarLabelStyle: {
+                    color: colorMode == "light" ? colors.black : colors.white, // 设置标签文字的颜色
+                  },
             }}
         >
             <TopTabs.Screen
@@ -159,26 +169,23 @@ function MyTopTabs() {
 }
 const MyTabs = ({ navigation }) => {
     const { colors } = useTheme();
+    const colorMode = useSelector(selectColorMode);
     return (
         <Tab.Navigator
             initialRouteName="HomeStack"
             screenOptions={{
-                tabBarActiveTintColor: colors.darkGreen,
+                tabBarActiveTintColor: colorMode == "light" ? colors.darkGreen : colors.white,
                 tabBarStyle: {
                     position: 'absolute',
                     bottom: -20,
                     left: 0,
                     right: 0,
                     elevation: 0, // 避免底部陰影
-                    backgroundColor: colors.white, // 背景顏色
-                    borderTopWidth: 0, // 移除頂部邊框線
+                    backgroundColor: colorMode == "light" ? colors.white : colors.lightBlack, // 背景顏色
                     height: 90, // Tab Bar 的高度
                 },
                 tabBarItemStyle: {
                     flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 10,
                 },
             }}
 
@@ -186,26 +193,29 @@ const MyTabs = ({ navigation }) => {
             <Tab.Screen
                 name="HomeStack"
                 component={MyTopTabs}
-                options={({ navigation })=>({
+                options={({ navigation }) => ({
                     title: '',
                     tabBarIconStyle: {
-                        marginLeft: 60,
+                        marginTop: 15,
                     },
                     headerRight: () => (
                         <Box mr={20}>
                             <Pressable
-                            onPress={() => {
-                                navigation.navigate('SearchScreen');
-                            }}>
+                                onPress={() => {
+                                    navigation.navigate('SearchScreen');
+                                }}>
                                 <MaterialCommunityIcons
                                     name='magnify'
                                     size={26}
-                                    color="#000" />
+                                    color={colorMode == "light" ? colors.black : colors.white} />
                             </Pressable>
                         </Box>
                     ),
                     headerLeft: () => (
-                        <Text fontSize={25} color='black' fontWeight='bold' ml={30}>我的日記</Text>
+                        <HStack alignItems='center' ml={20} gap={106}>
+                            <ColorModeBtn />
+                            <Text fontSize={22} color={colorMode == "light" ? colors.black : colors.white} fontWeight='bold' >我的日記</Text>
+                        </HStack>
                     ),
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="home" color={color} size={30} />
@@ -215,6 +225,7 @@ const MyTabs = ({ navigation }) => {
                         elevation: 0, // Remove the shadow on Android
                         shadowOpacity: 0, // Remove the shadow on iOS
                         height: 100,
+                        backgroundColor: colorMode == "light" ? colors.white : colors.lightBlack,
                     },
                 })}
             />
@@ -226,23 +237,24 @@ const MyTabs = ({ navigation }) => {
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
                         <Box >
-                            <MaterialCommunityIcons position='absolute' zIndex={10} borderRadius={50} bottom={4} left={-20.5}  name="camera" color={colors.white} size={35} style={{ marginTop: -55 }} />
-                            <Box w={64} h={64} position='absolute'zIndex={0} bottom={-10} left={-35} borderRadius={99} backgroundColor={colors.darkGreen} />
+                            <MaterialCommunityIcons position='absolute' zIndex={10} borderRadius={50} bottom={4} left={-20.5} name="camera" color={colors.white} size={35} style={{ marginTop: -55 }} />
+                            <Box w={64} h={64} position='absolute' zIndex={0} bottom={-10} left={-35} borderRadius={99} backgroundColor={colors.darkGreen} />
                         </Box>
                     ),
                 }}
-            />
+            /> */}
             <Tab.Screen
                 name="SettingsStack"
                 component={SettingsStack}
                 options={{
                     title: '',
                     tabBarIconStyle: {
-                        marginRight: 60,
+                        
+                        marginTop: 18,
                     },
                     headerShown: false,
                     tabBarIcon: ({ color }) => (
-                        <Ionicons name="map" color={color} size={26} />
+                        <MaterialCommunityIcons name="camera" color={color} size={28}/>
                     ),
                 }}
             />
@@ -351,9 +363,9 @@ const HomeStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-const AddStack = ({}) => {
+const AddStack = ({ }) => {
     return (
-        
+
         <Stack.Navigator>
             {/* <Stack.Screen
                 name="NullScreen"
@@ -366,19 +378,18 @@ const AddStack = ({}) => {
             <Stack.Screen
                 name="AddScreen"
                 component={AddScreen}
-                
+
                 options={{
                     title: null,
                     headerShadowVisible: false,
-                    paddingLeft:50,
+                    paddingLeft: 50,
                     headerLeft: () => (
-                        
-                        <Text fontSize={25} color='black' fontWeight='bold' ml={15}>新增日記</Text>
+                        <Text size='2xl' color='black' style={{ paddingTop: 10, paddingLeft: 10 }}>新增日記</Text>
                     ),
-                    
+
                 }}
             />
-            
+
         </Stack.Navigator>
     );
 }

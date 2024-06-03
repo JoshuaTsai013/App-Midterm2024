@@ -11,6 +11,7 @@ import { testdata } from '../components/Data';
 import DetailPopupMenu from "../components/DetailPopupMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { addToFavorite, removeFromFavorite } from "../Redux/cartReducer";
+import { selectColorMode } from "../Redux/cartReducer";
 import images from '../../assets/image'; 
 
 const { width, height } = Dimensions.get('screen')
@@ -18,13 +19,11 @@ const { width, height } = Dimensions.get('screen')
 const DetailScreen = ({ navigation, route }) => {
     const { colors } = useTheme();
     const { item } = route.params;
-    // const [data2Array, setData2Array] = useState(item.data2 ? Object.values(item.data2) : [item]);
-    // const lastDate = data2Array.slice(-1)[0];
-    // const firstDate = data2Array[0];
     const [title, setTitle] = useState(item.title);
     const [location, setLocation] = useState(item.location);
     const [toggle, setToggle] = useState(true);
     const cart = useSelector((state) => state.cart.cart);
+    const colorMode = useSelector(selectColorMode);
     const dispatch = useDispatch();
 
     const titleChange = (value) => {
@@ -40,7 +39,7 @@ const DetailScreen = ({ navigation, route }) => {
         dispatch(removeFromFavorite(item));
     };
     return (
-        <Box style={styles.container}>
+        <Box style={styles.container} bg={colorMode == "light" ? colors.white : colors.lightBlack}>
             <Pressable
                 position='absolute'
                 top={60}
@@ -79,15 +78,15 @@ const DetailScreen = ({ navigation, route }) => {
                     />
                 </Pressable>
             </Box>
-            <HStack w={width} height={80} paddingHorizontal={25} paddingTop={20} bgColor={colors.white} gap={32} >
+            <HStack w={width} height={80} paddingHorizontal={25} paddingTop={20} bg={colorMode == "light" ? colors.white : colors.lightBlack} gap={32} >
                 <VStack gap={10}>
-                    <Input h={30} w={200} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
-                        <InputField color={colors.black} value={title} onChangeText={titleChange} style={styles.title} />
+                    <Input h={30} w={200} borderColor={colorMode == "light" ? colors.white : colors.lightBlack} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                        <InputField color={colorMode == "light" ? colors.black : colors.white} value={title} onChangeText={titleChange} style={styles.title} />
                     </Input>
                     <HStack gap={0}>
-                        <MaterialIcons name='location-on' color={colors.darkGreen} size={20} style={{ position: 'absolute', left: 10, zIndex: 99 }} />
-                        <Input h={20} w={100} ml={20} pb={1} borderColor={colors.white} isDisabled={false} isInvalid={false} isReadOnly={false}>
-                            <InputField color={colors.darkGreen} value={location} onChangeText={locationChange} style={styles.locationName} />
+                        <MaterialIcons name='location-on' color={colorMode == "light" ? colors.darkGreen : colors.lightGreen} size={20} style={{ position: 'absolute', left: 10, zIndex: 99 }} />
+                        <Input h={20} w={100} ml={20} pb={1} borderColor={colorMode == "light" ? colors.white : colors.lightBlack} isDisabled={false} isInvalid={false} isReadOnly={false}>
+                            <InputField color={colorMode == "light" ? colors.darkGreen : colors.lightGreen} value={location} onChangeText={locationChange} style={styles.locationName} />
                         </Input>
                     </HStack>
                 </VStack>
@@ -97,25 +96,25 @@ const DetailScreen = ({ navigation, route }) => {
                         pl={75}
                         pt={5}
                         onPress={() => removeItemFromFavorite(item)}>
-                            <MaterialIcons name='bookmark' color={colors.darkGreen} size={25} />
+                            <MaterialIcons name='bookmark' color={colorMode == "light" ? colors.darkGreen : colors.lightGreen} size={25} />
                     </Pressable>
                     ) : (
                         <Pressable
                         pl={75}
                         pt={5}
                         onPress={() => addItemToFavorite(item)}>
-                            <MaterialIcons name='bookmark-outline' color={colors.darkGray} size={25} />
+                            <MaterialIcons name='bookmark-outline' color={colorMode == "light" ? colors.darkGreen : colors.lightGreen} size={25} />
                     </Pressable>
                     )}
                     <HStack gap={7}>
-                        <FontAwesome name='calendar' size={18} color={colors.darkGray} />
-                        <Text color={colors.darkGray} style={styles.fullDate}>{item.date}</Text>
+                        <FontAwesome name='calendar' size={18} color={colorMode == "light" ? colors.darkGray : colors.white} />
+                        <Text color={colorMode == "light" ? colors.darkGray : colors.white} style={styles.fullDate}>{item.date}</Text>
                     </HStack>
                 </VStack>
             </HStack>
             <ScrollView>
                 <Box paddingHorizontal={33} pt={20} justifyContent='center' alignItems='center'>
-                    <Text fontSize={14} >{item.content}</Text>
+                    <Text fontSize={14} color={colorMode == "light" ? colors.darkGray : colors.white}>{item.content}</Text>
                 </Box>
             </ScrollView>
 
@@ -126,7 +125,6 @@ const DetailScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     title: {
         fontSize: 26,

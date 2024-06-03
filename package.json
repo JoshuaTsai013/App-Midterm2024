@@ -20,6 +20,7 @@
     "@gluestack-ui/config": "^1.1.18",
     "@gluestack-ui/themed": "^1.1.9",
     "@gluestack-ui/themed-native-base": "^0.1.107-alpha2",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/material-top-tabs": "^6.6.13",
@@ -61,6 +62,7 @@
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
     "react-redux": "^9.1.2",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
     "updates": "^16.0.0"
   },

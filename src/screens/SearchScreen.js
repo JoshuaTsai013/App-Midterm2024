@@ -11,6 +11,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import testdata from '../json/Data.json';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import images from '../../assets/image'; 
+import { useSelector } from "react-redux";
+import { selectColorMode } from "../Redux/cartReducer";
 
 
 export default function SearchScreen({ navigation, route }) {
@@ -18,6 +20,7 @@ export default function SearchScreen({ navigation, route }) {
     const { width } = useWindowDimensions();
     const [list, setList] = useState([]);
     const [search, setSearch] = useState(null);
+    const colorMode = useSelector(selectColorMode);
     const filterList = (keyword) => {
         if (!keyword) {
             setList([]); // 如果搜索關鍵字為空，清空列表
@@ -37,12 +40,12 @@ export default function SearchScreen({ navigation, route }) {
     }, [search]);
 
     return (
-        <Box w={width} bgColor={colors.white} style={styles.container}>
+        <Box w={width} bg={colorMode == "light" ? colors.white : colors.lightBlack} style={styles.container}>
             <Pressable position='absolute' top={80} left={20} onPress={() => { navigation.goBack(); }}>
                 <MaterialIcons
                     name='clear'
                     size={26}
-                    color="#000"
+                    color={colorMode == "light" ? colors.black : colors.white}
                 />
             </Pressable>
             <Box position='absolute' top={65} left={45} right={15} style={styles.search}>
@@ -66,12 +69,12 @@ export default function SearchScreen({ navigation, route }) {
                                     <Image
                                         source={images[item.image]}
                                         style={styles.image} />
-                                    <Text style={styles.listText}>{item.title}</Text>
+                                    <Text color={colorMode == "light" ? colors.darkGray : colors.white}>{item.title}</Text>
                                     <Box position='absolute' left={300}>
                                         <MaterialIcons
                                             name='navigate-next'
                                             size={26}
-                                            color={colors.darkGray}
+                                            color={colorMode == "light" ? colors.darkGray : colors.white}
                                         />
                                     </Box>
                                 </HStack>

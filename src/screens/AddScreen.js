@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { HStack, Box, Text, Divider, VStack, Center, Pressable, Input, InputField, View } from "@gluestack-ui/themed";
-import { StyleSheet, Image, ScrollView, Dimensions, _ScrollView } from 'react-native';
+import { StyleSheet, Image, ScrollView, Dimensions, _ScrollView,KeyboardAvoidingView  } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import * as ImagePicker from "expo-image-picker"
@@ -9,19 +9,26 @@ const DEFAULT_IMAGE = Image.resolveAssetSource(BlankPic).uri;
 
 import * as FileSystem from 'expo-file-system';
 import uuid from 'react-native-uuid';
-import { logStoredJSONFile, getStoredTripData } from '../components/Fs'
-
-
 
 const AddScreen = ({ navigation }) => {
     const { colors } = useTheme();
     //store Title
-    const [title, setTitle] = useState("Enter Title");
+    const [title, setTitle] = useState("輸入標題");
     const titleChange = (value) => {
         setTitle(value);
     };
+    //store Location
+    const [location, setlocation] = useState("輸入地點");
+    const locationChange = (value) => {
+        setlocation(value);
+    };
+    //store category
+    const [category, setcategory] = useState("輸入類別");
+    const categoryChange = (value) => {
+        setcategory(value);
+    };
     //store content
-    const [content, setContent] = useState("Enter Memories");
+    const [content, setContent] = useState("");
     const contentChange = (value) => {
         setContent(value);
     };
@@ -41,7 +48,7 @@ const AddScreen = ({ navigation }) => {
             const result = await ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
-                aspect: [4, 3],
+                aspect: [1, 1],
                 quality: 1,
             });
 
@@ -82,8 +89,8 @@ const AddScreen = ({ navigation }) => {
         newTripData.id = uuid.v4(); // uuid
         newTripData.title = title;
         newTripData.date = getFormattedDate();
-        newTripData.locaion = "台北市";
-        newTripData.category = "景點";
+        newTripData.locaion = location;
+        newTripData.category = category;
         newTripData.content = content;
         newTripData.image = ImageUrl;
 
@@ -96,54 +103,25 @@ const AddScreen = ({ navigation }) => {
                 console.log("storeTripData Log:", trips)
             } catch (readError) {
                 // If the file doesn't exist yet, start with an empty array
-                
-                    console.error('Error reading existing data:', readError);
-                
+
+                console.error('Error reading existing data:', readError);
+
             }
 
             // 2. Add New Trip Data to Array
-            trips.push(newTripData); // Append the new trip to the array
+            trips.unshift(newTripData); // Append the new trip to the array
 
             // 3. Write Updated Array as JSON
             const updatedJsonString = JSON.stringify(trips);
             await FileSystem.writeAsStringAsync(fileUri, updatedJsonString);
 
             console.log('Trip data saved successfully!');
+            console.log('fileUri!!!!!!!!!!!!!!!!!!!!!',fileUri);
             //logStoredJSONFile('tripData.json')
         } catch (error) {
             console.error('Error saving trip data:', error);
         }
     }
-
-
-    // async function storeJSONData(title, content, ImageUrl) {
-
-    //     const newTripData = {};
-
-    //     newTripData.coordinate = {
-    //         latitude: parseFloat(25.035715839990768),
-    //         longitude: parseFloat(121.52021538299306),
-    //     };
-    //     newTripData.id = uuid.v4(); // uuid
-    //     newTripData.title = title;
-    //     newTripData.date = getFormattedDate();
-    //     newTripData.locaion = "台北市";
-    //     newTripData.category = "景點";
-    //     newTripData.content = content;
-    //     newTripData.image = ImageUrl;
-
-    //     const filename = 'tripData.json';
-    //     const fileUri = FileSystem.documentDirectory + filename;
-
-    //     try {
-    //         const jsonString = JSON.stringify(newTripData);
-    //         await FileSystem.writeAsStringAsync(fileUri, jsonString);
-    //         console.log('JSON data saved successfully!');
-    //         logStoredJSONFile('tripData.json')
-    //     } catch (error) {
-    //         console.error('Error saving JSON data:', error);
-    //     }
-    // }
 
     function getFormattedDate() {
         const now = new Date();
@@ -154,7 +132,6 @@ const AddScreen = ({ navigation }) => {
         return `${year}.${month}.${day}`;
     }
 
-    //aaaaaaaaaaaaa
     return (
         <Box flex={1} p={15} pb={20} pt={20} bgColor={colors.white}>
             {/* Title */}
@@ -185,15 +162,28 @@ const AddScreen = ({ navigation }) => {
 
             </Box>
             {/* {Location} */}
+            <KeyboardAvoidingView style={{ flexGrow: 2.5 }} behavior="padding">
             <HStack>
                 <Box flex={1} height={40} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="14" bgColor={colors.darkGray} style={styles.shadow}>
                     <Center h="100%">
-                        <Text>Location</Text>
+                        <Input borderColor={colors.darkGray}>
+                            <Center h="100%">
+
+                                <InputField color={colors.white} value={location} onChangeText={locationChange} style={styles.contentInput} />
+
+                            </Center>
+                        </Input>
                     </Center>
                 </Box>
                 <Box flex={1} height={40} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="14" bgColor={colors.darkGreen} style={styles.shadow}>
-                    <Center h="100%">
-                        <Text>Location</Text>
+                <Center h="100%">
+                        <Input borderColor={colors.darkGray}>
+                            <Center h="100%">
+
+                                <InputField color={colors.white} value={category} onChangeText={categoryChange} style={styles.contentInput} />
+
+                            </Center>
+                        </Input>
                     </Center>
                 </Box>
             </HStack>
@@ -208,18 +198,19 @@ const AddScreen = ({ navigation }) => {
                 <Pressable flex={1} onPress={() => { navigation.navigate('HomeStack', { screen: 'Home' }); }}>
                     <Box height={60} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="20%" bgColor={colors.darkGray} style={styles.shadow}>
                         <Center h="100%">
-                            <Text color={colors.white}>Cancel</Text>
+                            <Text color={colors.white}>取消</Text>
                         </Center>
                     </Box>
                 </Pressable>
-                <Pressable flex={1} onPress={() => { storeTripData(title, content, ImageUrl) }}>
+                <Pressable flex={1} onPress={() => { storeTripData(title, content, ImageUrl);navigation.navigate('HomeStack', { screen: 'Home' }); }}>
                     <Box height={60} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="20%" bgColor={colors.darkGreen} style={styles.shadow}>
                         <Center h="100%">
-                            <Text color={colors.white}>save</Text>
+                            <Text color={colors.white}>儲存</Text>
                         </Center>
                     </Box>
                 </Pressable>
             </HStack>
+            </KeyboardAvoidingView>
         </Box>
     );
 };

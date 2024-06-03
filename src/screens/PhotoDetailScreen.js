@@ -57,7 +57,7 @@ export default function PhotoDetailScreen({ navigation, route }) {
          <PinchGestureHandler
          onGestureEvent={this.onZoomEventFunction}
          onHandlerStateChange={this.onZoomStateChangeFunction}>
-            <Animated.Image source={images[item.image]} style={{width:'100%',height:'50%',transform:[{scale:this.scale}]}} />
+            <Animated.Image source={{uri:item.image}} style={{width:'100%',height:'50%',transform:[{scale:this.scale}]}} />
 
          </PinchGestureHandler>
       </Box >

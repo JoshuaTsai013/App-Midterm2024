@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
-import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, useColorScheme, Dimensions, _ScrollView, Animated, TouchableOpacity, Easing,RefreshControl } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, useColorScheme, Dimensions, _ScrollView, Animated, TouchableOpacity, Easing, RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 // import { data, testdata, region } from "../components/Data"
@@ -12,6 +12,7 @@ import images from '../../assets/image';
 import { useFocusEffect } from '@react-navigation/native';
 //import testdata from '../json/Data.json'
 //import images from '../../assets/image';
+import * as FileSystem from 'expo-file-system';
 
 import { getStoredTripData } from '../components/Fs'
 
@@ -22,43 +23,59 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const HomeScreen = ({ navigation }) => {
     const { colors } = useTheme();
-    const colorMode =useSelector(selectColorMode);
+    const colorMode = useSelector(selectColorMode);
     const [visible, setVisible] = useState(false);
     const [selectedFilters, setSelectedFilters] = useState([]);
     const [filteredItems, setFilteredItems] = useState(testdata);
     const [favoritesSelected, setFavoritesSelected] = useState(false);
     const [testdata, setData] = useState([]);
-
+    console.log("testdata________entry", testdata)
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-  
-
 
     const scale = useRef(new Animated.Value(0)).current;
     const cart = useSelector((state) => state.cart.cart);
-    useEffect(() => {
-        async function fetchData() {
-            const storedData = await getStoredTripData();
-            JSON.stringify(storedData);
-            setData(storedData);
-            setIsLoading(false); 
-            console.log("data_fetched")
+    const fetchData = async () => {
+        try {
+          const data = await getStoredTripData();
+          setData(data);
+        } catch (error) {
+          console.error("Error fetching trip data:", error);
+        } finally {
+          setIsLoading(false);
         }
+      };
+
+      //fetchData();
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         const storedData = await getStoredTripData();
+    //         setIsLoading(false);
+    //         setIsLoading(false);
+
+    //         console.log("set_______isLoading___false",isLoading)
+    //         JSON.stringify(storedData);
+    //         setData(storedData);
+    //         console.log("data_fetched________useffect");
+
+    //     }
+
+    //fetchData();
+        
+    // }, []);
+    useEffect(() => {
         fetchData();
-    }, []);
-    //const data = JSON.stringify(getStoredTripData())
-    //setData(getStoredTripData())
-    //console.log("test_data___",typeof(testdata))
-    //console.log("test_data___",testdata)
-    //console.log("da_data___",typeof(dadata))
-    //console.log("da_data___",dadata)
+        setRefreshing(true)
+        //FileSystem.deleteAsync("file:///var/mobile/Containers/Data/Application/BF6A6909-E7D6-43BF-B1A8-6B889C449760/Documents/ExponentExperienceData/@anonymous/wander-9a435468-88e0-4184-9994-838bf35b42ee/tripData.json", { idempotent: true });
 
-    const handleRefresh = () => {
-        setRefreshing(true);
 
-        setRefreshing(false);
-      }
-    
+      }, []); // Dependency on tripData to trigger re-render
+
+    // const handleRefresh = () => {
+    //     setRefreshing(true);
+    //     console.log(refreshing)
+    //   }
+
 
     const handleFilterButtonClick = (selectedCategory) => {
         if (selectedFilters.includes(selectedCategory)) {
@@ -101,14 +118,11 @@ const HomeScreen = ({ navigation }) => {
         setFilteredItems(tempItems);
     };
     if (isLoading) {
+        console.log("Loading screen")
         return (
-          <Box>
-            <Center>
-            <Text>Loading...</Text>
-            </Center>
-          </Box>
+           <></>
         );
-      }
+    }
 
     return (
         <Box>
@@ -184,7 +198,7 @@ const HomeScreen = ({ navigation }) => {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingTop: 10 }}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+                // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
                 >
                     <Box h={40} m={15} pl={10} pt={5}>
                         <Text w={300} fontSize={27} color={colorMode == "light" ? colors.black : colors.white} numberOfLines={1} fontWeight="bold">
@@ -210,7 +224,7 @@ const HomeScreen = ({ navigation }) => {
                                 }}
                             >
                                 <Image
-                                    source={{url: testItem.image}}
+                                    source={{ url: testItem.image }}
                                     style={styles.image}
                                     resizeMode="cover"
                                 />

@@ -73,7 +73,7 @@ const DetailScreen = ({ navigation, route }) => {
                         navigation.navigate('PhotoDetailScreen', { item });
                     }}>
                     <Image
-                        source={images[item.image]}
+                        source={{uri:item.image}}
                         style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
                     />
                 </Pressable>

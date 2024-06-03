@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
-import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, FlatList, Dimensions, Platform, _ScrollView, Animated, TouchableOpacity, Easing } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, FlatList, Dimensions, Platform, _ScrollView, Animated, TouchableOpacity, Easing,RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 // import { data, testdata, region } from "../components/Data"
@@ -26,6 +26,8 @@ const HomeScreen = ({ navigation }) => {
     const [testdata, setData] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+  
 
 
     const scale = useRef(new Animated.Value(0)).current;
@@ -36,9 +38,10 @@ const HomeScreen = ({ navigation }) => {
             JSON.stringify(storedData);
             setData(storedData);
             setIsLoading(false); 
+            console.log("data_fetched")
         }
         fetchData();
-    }, []);
+    }, [refreshing]);
     //const data = JSON.stringify(getStoredTripData())
     //setData(getStoredTripData())
     //console.log("test_data___",typeof(testdata))
@@ -46,6 +49,11 @@ const HomeScreen = ({ navigation }) => {
     //console.log("da_data___",typeof(dadata))
     //console.log("da_data___",dadata)
 
+    const handleRefresh = () => {
+        setRefreshing(true);
+
+        setRefreshing(false);
+      }
     
 
     const handleFilterButtonClick = (selectedCategory) => {
@@ -172,6 +180,7 @@ const HomeScreen = ({ navigation }) => {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingTop: 10 }}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
                 >
                     <Box h={40} m={15} pl={10} pt={5}>
                         <Text w={300} fontSize={27} color={colors.black} numberOfLines={1} fontWeight="bold">

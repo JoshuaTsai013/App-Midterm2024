@@ -229,7 +229,7 @@ const MyTabs = ({ navigation }) => {
                     },
                 })}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="NullScreen"
                 component={NullScreen}
                 options={{
@@ -242,10 +242,10 @@ const MyTabs = ({ navigation }) => {
                         </Box>
                     ),
                 }}
-            /> */}
+            />  */}
             <Tab.Screen
-                name="SettingsStack"
-                component={SettingsStack}
+                name="NullScreen"
+                component={NullScreen}
                 options={{
                     title: '',
                     tabBarIconStyle: {

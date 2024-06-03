@@ -11,7 +11,7 @@ import testdata from '../json/Data.json'
 import images from '../../assets/image';
 import { useFocusEffect } from '@react-navigation/native';
 //import testdata from '../json/Data.json'
-import images from '../../assets/image';
+//import images from '../../assets/image';
 
 import { getStoredTripData } from '../components/Fs'
 
@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
             console.log("data_fetched")
         }
         fetchData();
-    }, [refreshing]);
+    }, []);
     //const data = JSON.stringify(getStoredTripData())
     //setData(getStoredTripData())
     //console.log("test_data___",typeof(testdata))

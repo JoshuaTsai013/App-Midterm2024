@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HStack, Box, Text, Pressable, VStack, Center, Menu, MenuItem, Icon, MenuIcon, MenuItemLabel, Button, ButtonText } from "@gluestack-ui/themed";
-import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, useColorScheme, Dimensions, _ScrollView, Animated, TouchableOpacity, Easing } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Image, ScrollView, useColorScheme, Dimensions, _ScrollView, Animated, TouchableOpacity, Easing,RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 // import { data, testdata, region } from "../components/Data"
@@ -9,6 +9,11 @@ import { useSelector } from "react-redux";
 import { selectColorMode } from "../Redux/cartReducer";
 import testdata from '../json/Data.json'
 import images from '../../assets/image';
+import { useFocusEffect } from '@react-navigation/native';
+//import testdata from '../json/Data.json'
+//import images from '../../assets/image';
+
+import { getStoredTripData } from '../components/Fs'
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -22,9 +27,38 @@ const HomeScreen = ({ navigation }) => {
     const [selectedFilters, setSelectedFilters] = useState([]);
     const [filteredItems, setFilteredItems] = useState(testdata);
     const [favoritesSelected, setFavoritesSelected] = useState(false);
+    const [testdata, setData] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+  
+
 
     const scale = useRef(new Animated.Value(0)).current;
     const cart = useSelector((state) => state.cart.cart);
+    useEffect(() => {
+        async function fetchData() {
+            const storedData = await getStoredTripData();
+            JSON.stringify(storedData);
+            setData(storedData);
+            setIsLoading(false); 
+            console.log("data_fetched")
+        }
+        fetchData();
+    }, []);
+    //const data = JSON.stringify(getStoredTripData())
+    //setData(getStoredTripData())
+    //console.log("test_data___",typeof(testdata))
+    //console.log("test_data___",testdata)
+    //console.log("da_data___",typeof(dadata))
+    //console.log("da_data___",dadata)
+
+    const handleRefresh = () => {
+        setRefreshing(true);
+
+        setRefreshing(false);
+      }
+    
 
     const handleFilterButtonClick = (selectedCategory) => {
         if (selectedFilters.includes(selectedCategory)) {
@@ -66,6 +100,15 @@ const HomeScreen = ({ navigation }) => {
 
         setFilteredItems(tempItems);
     };
+    if (isLoading) {
+        return (
+          <Box>
+            <Center>
+            <Text>Loading...</Text>
+            </Center>
+          </Box>
+        );
+      }
 
     return (
         <Box>
@@ -141,6 +184,7 @@ const HomeScreen = ({ navigation }) => {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingTop: 10 }}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
                 >
                     <Box h={40} m={15} pl={10} pt={5}>
                         <Text w={300} fontSize={27} color={colorMode == "light" ? colors.black : colors.white} numberOfLines={1} fontWeight="bold">
@@ -166,7 +210,7 @@ const HomeScreen = ({ navigation }) => {
                                 }}
                             >
                                 <Image
-                                    source={images[testItem.image]}
+                                    source={{url: testItem.image}}
                                     style={styles.image}
                                     resizeMode="cover"
                                 />

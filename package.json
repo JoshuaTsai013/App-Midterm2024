@@ -59,7 +59,9 @@
     "react-native-web": "~0.19.6",
     "react-redux": "^9.1.2",
     "redux-thunk": "^3.1.0",
-    "updates": "^16.0.0"
+    "updates": "^16.0.0",
+    "expo-image-picker": "~14.7.1",
+    "expo-file-system": "~16.0.9"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

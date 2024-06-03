@@ -319,41 +319,33 @@ const HomeStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-const AddStack = ({ navigation }) => {
+const AddStack = ({}) => {
     return (
+        
         <Stack.Navigator>
-            <Stack.Screen
-                name="Add"
-                component={AddScreen}
-                options={{
-                    // title: null,
-                    // headerShown:false,
-                    // headerShadowVisible: false,
-                    // headerLeft: () => (
-                    //     <MaterialCommunityIcons
-                    //         name={'menu'}
-                    //         size={20}
-                    //         onPress={() => navigation.openDrawer()}
-                    //         style={{ marginRight: 20 }}
-                    //     />
-                    // ),
-                    // headerRight: () => (
-                    //     <MaterialCommunityIcons
-                    //         name="magnify"
-                    //         size={26}
-                    //         onPress={() => alert('查不到')}
-                    //         style={{}}
-                    //     />
-                    // ),
-                }}
-            />
-            <Stack.Screen
-                name="Detail"
-                component={DetailScreen}
+            {/* <Stack.Screen
+                name="NullScreen"
+                component={NullScreen}
+                
                 options={{
                     headerShown: false,
                 }}
+            /> */}
+            <Stack.Screen
+                name="AddScreen"
+                component={AddScreen}
+                
+                options={{
+                    title: null,
+                    headerShadowVisible: false,
+                    paddingLeft:50,
+                    headerLeft: () => (
+                        <Text size='2xl' color='black' style={{ paddingTop: 10 ,paddingLeft: 10}}>新增日記</Text>
+                    ),
+                    
+                }}
             />
+            
         </Stack.Navigator>
     );
 }

@@ -1,41 +1,82 @@
 import React, { useState } from 'react';
-import { HStack, Box, Text, Divider, VStack, Center, Input, InputField, View } from "@gluestack-ui/themed";
+import { HStack, Box, Text, Divider, VStack, Center, Pressable, Input, InputField, View } from "@gluestack-ui/themed";
 import { StyleSheet, Image, ScrollView, Dimensions, _ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import MapViewStyle from '../json/MapViewStyle.json'
 import { Marker } from 'react-native-maps';
 import { data, region } from "../components/Data"
+//import { storeImageFile } from "../components/Fs"
+
+import * as ImagePicker from "expo-image-picker"
+import BlankPic from "../../image/BlankPic.png"
+const DEFAULT_IMAGE = Image.resolveAssetSource(BlankPic).uri;
+
+import * as FileSystem from 'expo-file-system';
+
 
 const AddScreen = ({ navigation }) => {
     const { colors } = useTheme();
-    const [date, setDate] = useState("Enter Date");
-    const dateChange = (value) => {
-        setDate(value);
-    };
+    //store Title
     const [title, setTitle] = useState("Enter Title");
     const titleChange = (value) => {
         setTitle(value);
     };
+    //store content
     const [content, setContent] = useState("Enter Memories");
     const contentChange = (value) => {
         setContent(value);
     };
+    //open camera and upload Image
+    const [ImageUrl, setImageUrl] = useState(DEFAULT_IMAGE);
 
+    async function storeImageFile() {
+        try {
+          // 1. Request Permissions (Camera and Camera Roll)
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') {
+            alert('Sorry, we need camera permissions to take a photo!');
+            return;
+          }
+          // 2. Launch Camera
+          const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+      
+          if (!result.canceled) {
+            // 3. Process Camera Image
+            const imageUri = result.assets[0].uri;
+            const filename = `image_${Date.now()}.jpg`;
+            const fileDestination = FileSystem.documentDirectory + filename;
+      
+            // Option A: Copy directly if URI is a file path
+            if (imageUri.startsWith('file://')) {
+              await FileSystem.copyAsync({ from: imageUri, to: fileDestination });
+            } else {
+              // Option B: Download if URI is not a file path
+              await FileSystem.downloadAsync(imageUri, fileDestination);
+            }
+      
+            console.log('Image file saved successfully!', fileDestination);
+            //return fileDestination; // Return the saved file path
+            setImageUrl(fileDestination)
+          }
+        } catch (error) {
+          console.error('Error storing image file:', error);
+          throw error;
+        }
+      }
+      
+      
+
+    //aaaaaaaaaaaaa
     return (
-        <Box flex={1} p={15} pb={100} pt={40} bgColor={colors.white}>
-            {/* Date */}
-            <Box flex={1.2} mb={10} paddingHorizontal={60} borderRadius="50%" bgColor={colors.lightGreen} style={styles.shadow}>
-                <Center h="100%">
-                    <Input borderColor={colors.lightGreen} isDisabled={false} isInvalid={false} isReadOnly={false}>
-                        <Center h="100%">
-                            <InputField color={colors.white} value={date} onChangeText={dateChange} style={styles.input} />
-                        </Center>
-                    </Input>
-                </Center>
-            </Box>
+        <Box flex={1} p={15} pb={20} pt={20} bgColor={colors.white}>
             {/* Title */}
-            <Box flex={1.2} mb={10} paddingHorizontal={60} borderRadius="50%" bgColor={colors.darkGreen} style={styles.shadow}>
+            <Box height={60} mb={10} paddingHorizontal={60} borderRadius="20%" bgColor={colors.darkGreen} style={styles.shadow}>
                 <Center h="100%">
                     <Input borderColor={colors.darkGreen} isDisabled={false} isInvalid={false} isReadOnly={false}>
                         <Center h="100%">
@@ -44,79 +85,64 @@ const AddScreen = ({ navigation }) => {
                     </Input>
                 </Center>
             </Box>
-            {/* Photo and Type */}
-            <Box flex={3} mb={10} borderRadius={30} style={styles.shadow}>
-                <HStack h="100%">
-                    <Box flex={1} mr={20} borderRadius={30}>
-                        <Image
-                            source={require('../../image/CKS_MH.jpg')}
-                            style={styles.image}
-                            resizeMode="cover"
-                        />
-                    </Box>
-                    <Box flex={1} borderRadius={30} bgColor={colors.darkGray}>
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                            <VStack>
-                                <Center gap={8} paddingVertical={20} borderRadius={30}>
-                                    <Text color={colors.white} fontSize={16} m={4}>New Journey</Text>
-                                    <Divider my="$0.6" bg={colors.lightGray} />
-                                    <Text color={colors.white} fontSize={16} m={4}>出門踏青</Text>
-                                    <Divider my="$0.6" bg={colors.lightGray} />
-                                    <Text color={colors.white} fontSize={16} m={4}>探索台北</Text>
-                                    <Divider my="$0.6" bg={colors.lightGray} />
-                                    <Text color={colors.white} fontSize={16} m={4}>滷肉飯之旅</Text>
+            {/* Photo */}
+            <Box flex={6} mb={10} borderRadius={30} style={styles.shadow}>
+                <Pressable onPress={() => {
+                    //console.log(typeof(ImageUrl));
+                    console.log(ImageUrl);
+                    storeImageFile();
 
-                                </Center>
-                            </VStack>
-                        </ScrollView>
-                    </Box>
-                </HStack>
-            </Box>
-            {/* Map */}
-            <Box flex={3} mb={10} borderRadius={30} bgColor={colors.darkGreen} style={styles.shadow}>
-                <MapView
-                    style={styles.map}
-                    provider={PROVIDER_GOOGLE}
-                    customMapStyle={MapViewStyle}
-                    initialRegion={region}
-                    showsUserLocation={true}
-                    region={{
-                        latitude: region.latitude,
-                        longitude: region.longitude,
-                        latitudeDelta: region.latitudeDelta,
-                        longitudeDelta: region.longitudeDelta
-                    }}>
-                    {data.map((marker, index) => {
-                        const scaleStyle = {
-                            transform: [
-                                {
-                                    scale: 0.3,
-                                },
-                            ],
-                        };
-                        return (
-                            <Marker
-                                coordinate={marker.coordinate}
-                                key={index}
-                            >
-                                <View style={styles.markerWrap}>
-                                    <Image
-                                        source={require('../../image/locationIcon.png')}
-                                        style={[styles.marker, scaleStyle]}
-                                        resizeMode="cover" />
-                                </View>
-                            </Marker>
-                        );
-                    })}
-                </MapView>
+                }}>
+                    <Image
+                        source={{ url: ImageUrl }}
+                        //source={{url:DEFAULT_IMAGE}}
+                        style={styles.image}
+                        resizeMode="cover"
+                    />
+                </Pressable>
 
             </Box>
+            {/* {Location} */}
+            <HStack>
+                <Box flex={1} height={40} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="14" bgColor={colors.darkGreen} style={styles.shadow}>
+                    <Center h="100%">
+                        <Text>Location</Text>
+                    </Center>
+                </Box>
+                <Box flex={1} height={40} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="14" bgColor={colors.darkGreen} style={styles.shadow}>
+                    <Center h="100%">
+                        <Text>Location</Text>
+                    </Center>
+                </Box>
+            </HStack>
             {/* Text input */}
             <Box flex={3} mb={10} borderRadius={30} p={20} bgColor={colors.lightGray} style={styles.shadow}>
                 <Input borderColor={colors.lightGray} isDisabled={false} isInvalid={false} isReadOnly={false}>
                     <InputField color={colors.black} value={content} onChangeText={contentChange} style={styles.contentInput} />
                 </Input>
             </Box>
+            {/* Save Btn */}
+            <HStack>
+                <Pressable flex={1}
+                    onPress={() => {
+                        //navigation.navigate('root');
+                        navigation.navigate('HomeStack', { screen: 'Home' });
+                        //console.log("pressed");
+
+                    }}
+                >
+                    <Box flex={1} height={60} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="20%" bgColor={colors.darkGreen} style={styles.shadow}>
+                        <Center h="100%">
+                            <Text>save</Text>
+                        </Center>
+                    </Box>
+                </Pressable>
+                <Box flex={1} height={60} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="20%" bgColor={colors.darkGreen} style={styles.shadow}>
+                    <Center h="100%">
+                        <Text>save</Text>
+                    </Center>
+                </Box>
+            </HStack>
         </Box>
     );
 };

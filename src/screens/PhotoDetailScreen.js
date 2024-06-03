@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { HStack, Center, Box, Text, Pressable } from "@gluestack-ui/themed";
-import { View, StyleSheet, Image, ScrollView, Dimensions, Platform, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, Image,Animated, ScrollView, Dimensions, Platform, useWindowDimensions } from 'react-native';
 import MyTheme from '../theme';
-import Animated, { FadeInLeft } from 'react-native-reanimated';
+import { FadeInLeft } from 'react-native-reanimated';
 import ActionSheet from 'react-native-actionsheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { PinchGestureHandler, State } from 'react-native-gesture-handler';
+import images from '../../assets/image'; 
 
 
 export default function PhotoDetailScreen({ navigation, route }) {
@@ -14,7 +16,7 @@ export default function PhotoDetailScreen({ navigation, route }) {
    const { item } = route.params;
    const { width } = useWindowDimensions();
    const toggleFunction = () => {
-       setToggle(!toggle);
+      setToggle(!toggle);
    };
    let actionSheet = useRef();
    let optionArray = [
@@ -23,19 +25,43 @@ export default function PhotoDetailScreen({ navigation, route }) {
    const showActionSheet = () => {
       actionSheet.current.show();
    }
-  
+   scale = new Animated.Value(1);
+
+   onZoomEventFunction=Animated.event(
+      [{
+         nativeEvent:{scale:this.scale}
+      }],
+      {
+         useNativeDriver:true
+      }
+   )
+
+   onZoomStateChangeFunction=(event)=>{
+      if(event.nativeEvent.oldState == State.ACTIVE){
+         Animated.spring(this.scale,{
+            toValue:1,
+            useNativeDriver:true
+         }).start()
+      }
+   }
+
    return (
       <Box w={width} bgColor={colors.white} style={styles.container}>
-         <Pressable position='absolute' top={70} right={30} onPress={showActionSheet}>
+         {/* <Pressable position='absolute' top={70} right={30} onPress={showActionSheet}>
             <Image
                source={require('../../image/actionButton.png')}
                style={styles.actionButton} />
-         </Pressable>
+         </Pressable> */}
          <Pressable position='absolute' top={70} left={30} onPress={() => { navigation.goBack(); }}>
             <MaterialIcons name='arrow-back-ios-new' color={colors.darkGreen} size={22} />
          </Pressable>
-         <Animated.Image source={item.image} style={styles.image} />
-         <Animated.Text style={styles.text} entering={FadeInLeft.duration(700)}>
+         <PinchGestureHandler
+         onGestureEvent={this.onZoomEventFunction}
+         onHandlerStateChange={this.onZoomStateChangeFunction}>
+            <Animated.Image source={images[item.image]} style={{width:'100%',height:'50%',transform:[{scale:this.scale}]}} />
+
+         </PinchGestureHandler>
+         {/* <Animated.Text style={styles.text} entering={FadeInLeft.duration(700)}>
             {item.note}
          </Animated.Text>
          <ActionSheet
@@ -47,7 +73,7 @@ export default function PhotoDetailScreen({ navigation, route }) {
             onPress={(index) => (
                index === 0 ? alert(optionArray[index]) : null
             )}
-         />
+         /> */}
       </Box >
    )
 }
@@ -71,3 +97,4 @@ const styles = StyleSheet.create({
       height: 23
    }
 })
+

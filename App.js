@@ -6,6 +6,9 @@ import { config } from '@gluestack-ui/config';
 import * as Location from 'expo-location';
 import { Platform, Text, View, StyleSheet } from 'react-native';
 import { UserLocation } from "./src/components/UserLocation";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider } from 'react-redux'
+import store from "./src/Redux/store";
 
 
 
@@ -37,13 +40,17 @@ export default function App() {
   }
 
   return (
-    <UserLocation.Provider
-      value={{ location, setLocation }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <GluestackUIProvider config={config}>
-          <Navigation />
-        </GluestackUIProvider>
-      </SafeAreaView>
-    </UserLocation.Provider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <UserLocation.Provider
+        value={{ location, setLocation }}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <GluestackUIProvider config={config}>
+            <Provider store={store}>
+              <Navigation />
+            </Provider>
+          </GluestackUIProvider>
+        </SafeAreaView>
+      </UserLocation.Provider>
+    </GestureHandlerRootView>
   );
 }

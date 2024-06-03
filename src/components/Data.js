@@ -198,7 +198,7 @@ export const data = [
         ],
     }
 ];
-export const testdata = [
+export const test = [
     {
         coordinate: {
             latitude: 25.035715835590768,

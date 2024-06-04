@@ -9,7 +9,8 @@ const MyTheme = {
      darkGreen:'#466A47',
      lightGreen:'#85B387',
      white:'#fff',
-     black:'#131313'
+     black:'#131313',
+     lightBlack:'#272727',
    },
  };
 

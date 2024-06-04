@@ -184,7 +184,7 @@ const HomeScreen = ({ navigation }) => {
                 // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
                 >
                     <Box h={40} m={15} pl={10} pt={5}>
-                        <Text w={300} fontSize={27} color={colorMode == "light" ? colors.black : colors.white} numberOfLines={1} fontWeight="bold">
+                        <Text w={290} fontSize={27} color={colorMode == "light" ? colors.black : colors.white} numberOfLines={1} fontWeight="bold">
                             {favoritesSelected
                                 ? '我的珍藏'
                                 : (selectedFilters.length === 0

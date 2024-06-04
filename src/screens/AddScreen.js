@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { HStack, Box, Text, Divider, VStack, Center, Pressable, Input, InputField, View } from "@gluestack-ui/themed";
 import { StyleSheet, Image, ScrollView, Dimensions, _ScrollView,KeyboardAvoidingView  } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { useSelector } from "react-redux";
+import { selectColorMode } from "../Redux/cartReducer";
 
 import * as ImagePicker from "expo-image-picker"
 import BlankPic from "../../image/BlankPic.png"
@@ -12,6 +14,7 @@ import uuid from 'react-native-uuid';
 
 const AddScreen = ({ navigation }) => {
     const { colors } = useTheme();
+    const colorMode = useSelector(selectColorMode);
     //store Title
     const [title, setTitle] = useState("輸入標題");
     const titleChange = (value) => {
@@ -133,7 +136,7 @@ const AddScreen = ({ navigation }) => {
     }
 
     return (
-        <Box flex={1} p={15} pb={20} pt={20} bgColor={colors.white}>
+        <Box flex={1} p={15} pb={20} pt={20} bg={colorMode == "light" ? colors.white : colors.lightBlack}>
             {/* Title */}
             <Box height={60} mb={10} paddingHorizontal={60} borderRadius="20%" bgColor={colors.darkGreen} style={styles.shadow}>
                 <Center h="100%">

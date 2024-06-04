@@ -107,6 +107,8 @@ const MyDrawer = () => {
 }
 
 const SupremeStack = ({}) => {
+    const { colors } = useTheme();
+    const colorMode = useSelector(selectColorMode);
     return (
         
         <Stack.Navigator>
@@ -128,8 +130,11 @@ const SupremeStack = ({}) => {
                     paddingLeft:50,
                     headerLeft: () => (
                         
-                        <Text fontSize={25} color='black' fontWeight='bold' ml={15}>新增日記</Text>
+                        <Text fontSize={22} alignItems='center' ml={135} color={colorMode == "light" ? colors.black : colors.white} fontWeight='bold'>新增日記</Text>
                     ),
+                    headerStyle: {
+                        backgroundColor: colorMode == "light" ? colors.white : colors.lightBlack,
+                    },
                     
                 }}
             />
@@ -140,7 +145,6 @@ const SupremeStack = ({}) => {
 function MyTopTabs() {
     const { colors } = useTheme();
     const colorMode = useSelector(selectColorMode);
-    // bg={colorMode == "light" ? colors.white : colors.lightBlack}
     return (
         <TopTabs.Navigator
             screenOptions={{
@@ -256,6 +260,9 @@ const MyTabs = ({ navigation }) => {
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="camera" color={color} size={28}/>
                     ),
+                    headerStyle: {
+                        backgroundColor: colorMode == "light" ? colors.white : colors.lightBlack,
+                    },
                 }}
             />
         </Tab.Navigator>
@@ -363,35 +370,40 @@ const HomeStack = ({ navigation }) => {
         </Stack.Navigator>
     );
 }
-const AddStack = ({ }) => {
-    return (
+// const AddStack = ({ }) => {
+//     const { colors } = useTheme();
+//     const colorMode = useSelector(selectColorMode);
+//     return (
 
-        <Stack.Navigator>
-            {/* <Stack.Screen
-                name="NullScreen"
-                component={NullScreen}
+//         <Stack.Navigator>
+//             {/* <Stack.Screen
+//                 name="NullScreen"
+//                 component={NullScreen}
                 
-                options={{
-                    headerShown: false,
-                }}
-            /> */}
-            <Stack.Screen
-                name="AddScreen"
-                component={AddScreen}
+//                 options={{
+//                     headerShown: false,
+//                 }}
+//             /> */}
+//             <Stack.Screen
+//                 name="AddScreen"
+//                 component={AddScreen}
 
-                options={{
-                    title: null,
-                    headerShadowVisible: false,
-                    paddingLeft: 50,
-                    headerLeft: () => (
-                        <Text size='2xl' color='black' style={{ paddingTop: 10, paddingLeft: 10 }}>新增日記</Text>
-                    ),
+//                 options={{
+//                     title: null,
+//                     headerShadowVisible: false,
+//                     paddingLeft: 50,
+//                     headerLeft: () => (
+//                         <Text size='2xl' color={colorMode == "light" ? colors.black : colors.white} style={{ paddingTop: 10, paddingLeft: 10 }}>新增日記</Text>
+//                     ),
+//                     headerStyle: {
+//                         backgroundColor: colorMode == "light" ? colors.white : colors.lightBlack,
+//                     },
 
-                }}
-            />
+//                 }}
+//             />
 
-        </Stack.Navigator>
-    );
-}
+//         </Stack.Navigator>
+//     );
+// }
 
 export default Navigation;

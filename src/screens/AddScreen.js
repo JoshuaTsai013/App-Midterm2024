@@ -89,7 +89,7 @@ const AddScreen = ({ navigation }) => {
         newTripData.id = uuid.v4(); // uuid
         newTripData.title = title;
         newTripData.date = getFormattedDate();
-        newTripData.locaion = location;
+        newTripData.location = location;
         newTripData.category = category;
         newTripData.content = content;
         newTripData.image = ImageUrl;

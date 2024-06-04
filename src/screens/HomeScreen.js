@@ -31,7 +31,7 @@ const HomeScreen = ({ navigation }) => {
     const [testdata, setData] = useState([]);
     console.log("testdata________entry", testdata)
     const [isLoading, setIsLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
+    //const [refreshing, setRefreshing] = useState(false);
 
     const scale = useRef(new Animated.Value(0)).current;
     const cart = useSelector((state) => state.cart.cart);
@@ -45,27 +45,10 @@ const HomeScreen = ({ navigation }) => {
           setIsLoading(false);
         }
       };
-
-      //fetchData();
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         const storedData = await getStoredTripData();
-    //         setIsLoading(false);
-    //         setIsLoading(false);
-
-    //         console.log("set_______isLoading___false",isLoading)
-    //         JSON.stringify(storedData);
-    //         setData(storedData);
-    //         console.log("data_fetched________useffect");
-
-    //     }
-
-    //fetchData();
-        
-    // }, []);
+      
     useEffect(() => {
         fetchData();
-        setRefreshing(true)
+        //setRefreshing(true)
         //FileSystem.deleteAsync("file:///var/mobile/Containers/Data/Application/BF6A6909-E7D6-43BF-B1A8-6B889C449760/Documents/ExponentExperienceData/@anonymous/wander-9a435468-88e0-4184-9994-838bf35b42ee/tripData.json", { idempotent: true });
 
 

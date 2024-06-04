@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import { selectColorMode } from "../Redux/cartReducer";
 import images from '../../assets/image';
 
+//import { getStoredTripData } from '../components/Fs'
+
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 180;
@@ -34,9 +36,32 @@ const MapScreen = ({ navigation }) => {
     const [filteredItems, setFilteredItems] = useState(testdata);
     const [highlightedIndex, setHighlightedIndex] = useState(null); // 新增
     const [favoritesSelected, setFavoritesSelected] = useState(false);
+    //const [testdata, setData] = useState([]);
 
     const cart = useSelector((state) => state.cart.cart);
     const colorMode = useSelector(selectColorMode);
+
+    // const fetchData = async () => {
+    //     try {
+    //       const data = await getStoredTripData();
+    //       setData(data);
+    //       console.log("set_____Data___Map")
+          
+    //     } catch (error) {
+    //       console.error("Error fetching trip data:", error);
+    //     } finally {
+    //     const loaded = false
+        
+   
+          
+    //     }
+    //   };
+    
+    // useEffect(() => {
+    //     fetchData();
+       
+
+    //   }, []); 
 
     const handleFilterButtonClick = (selectedCategory) => {
         if (selectedFilters.includes(selectedCategory)) {

@@ -180,7 +180,7 @@ const AddScreen = ({ navigation }) => {
                 </Box>
                 <Box flex={1} height={40} mb={10} paddingHorizontal={5} marginHorizontal={5} borderRadius="14" bgColor={colors.darkGreen} style={styles.shadow}>
                 <Center h="100%">
-                        <Input borderColor={colors.darkGray}>
+                        <Input borderColor={colors.darkGreen}>
                             <Center h="100%">
 
                                 <InputField color={colors.white} value={category} onChangeText={categoryChange} style={styles.contentInput} />

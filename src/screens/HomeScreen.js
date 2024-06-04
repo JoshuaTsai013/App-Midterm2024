@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import { selectColorMode } from "../Redux/cartReducer";
 import testdata from '../json/Data.json'
 import images from '../../assets/image';
-import { useFocusEffect } from '@react-navigation/native';
 //import testdata from '../json/Data.json'
 //import images from '../../assets/image';
 import * as FileSystem from 'expo-file-system';
@@ -31,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
     const [testdata, setData] = useState([]);
     console.log("testdata________entry", testdata)
     const [isLoading, setIsLoading] = useState(true);
-    //const [refreshing, setRefreshing] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const scale = useRef(new Animated.Value(0)).current;
     const cart = useSelector((state) => state.cart.cart);
@@ -39,25 +38,31 @@ const HomeScreen = ({ navigation }) => {
         try {
           const data = await getStoredTripData();
           setData(data);
+          console.log("set_____Data")
+          setRefreshing(false);
         } catch (error) {
           console.error("Error fetching trip data:", error);
         } finally {
-          setIsLoading(false);
+        const loaded = false
+          setIsLoading(loaded);
+          console.log("isloading_____",isLoading)
+          
         }
       };
-      
+    
     useEffect(() => {
         fetchData();
         //setRefreshing(true)
-        //FileSystem.deleteAsync("file:///var/mobile/Containers/Data/Application/BF6A6909-E7D6-43BF-B1A8-6B889C449760/Documents/ExponentExperienceData/@anonymous/wander-9a435468-88e0-4184-9994-838bf35b42ee/tripData.json", { idempotent: true });
+        //FileSystem.deleteAsync("file:///var/mobile/Containers/Data/Application/BF6A6909-E7D6-43BF-B1A8-6B889C449760/Documents/ExponentExperienceData/@anonymous/wander-610cafdc-e82e-4965-b0c5-8ccbe83c6a4f/tripData.json", { idempotent: true });
 
 
       }, []); // Dependency on tripData to trigger re-render
 
-    // const handleRefresh = () => {
-    //     setRefreshing(true);
-    //     console.log(refreshing)
-    //   }
+    const handleRefresh = () => {
+        setRefreshing(false);
+        console.log(refreshing)
+        fetchData();
+      }
 
 
     const handleFilterButtonClick = (selectedCategory) => {
@@ -85,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         filterItems();
-    }, [selectedFilters, favoritesSelected]);
+    }, [selectedFilters, favoritesSelected,testdata]);
 
     const filterItems = () => {
         let tempItems = [...testdata];
@@ -103,7 +108,7 @@ const HomeScreen = ({ navigation }) => {
     if (isLoading) {
         console.log("Loading screen")
         return (
-           <></>
+           <><Center><Text></Text></Center></>
         );
     }
 
@@ -181,7 +186,7 @@ const HomeScreen = ({ navigation }) => {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingTop: 10 }}
-                // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
                 >
                     <Box h={40} m={15} pl={10} pt={5}>
                         <Text w={290} fontSize={27} color={colorMode == "light" ? colors.black : colors.white} numberOfLines={1} fontWeight="bold">

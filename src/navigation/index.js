@@ -19,8 +19,10 @@ import MapScreen from '../screens/MapScreen'
 import AddScreen from '../screens/AddScreen'
 import SettingScreen from '../screens/SettingScreen';
 import PhotoDetailScreen from '../screens/PhotoDetailScreen'
+import PhotoDetailScreenTwo from '../screens/PhotoDetailScreenTwo'
 import NullScreen from '../screens/NullScreen';
 import SearchScreen from '../screens/SearchScreen'
+import DetailScreenTwo from '../screens/DetailScreenTwo';
 import MyTheme from '../theme';
 import { useFonts } from 'expo-font'
 import ColorModeBtn from "../components/ColorModeBtn";
@@ -308,7 +310,7 @@ const MapStack = ({ navigation }) => {
             />
             <Stack.Screen
                 name="DetailScreen"
-                component={DetailScreen}
+                component={DetailScreenTwo}
                 options={{
                     headerShown: false,
                     presentation: 'transparentModal',
@@ -317,7 +319,7 @@ const MapStack = ({ navigation }) => {
             />
             <Stack.Screen
                 name="PhotoDetailScreen"
-                component={PhotoDetailScreen}
+                component={PhotoDetailScreenTwo}
                 options={{
                     headerShown: false,
                     presentation: 'transparentModal',

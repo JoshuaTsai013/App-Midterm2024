@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import { selectColorMode } from "../Redux/cartReducer";
 import testdata from '../json/Data.json'
 import images from '../../assets/image';
-import { useFocusEffect } from '@react-navigation/native';
 //import testdata from '../json/Data.json'
 //import images from '../../assets/image';
 import * as FileSystem from 'expo-file-system';
@@ -54,7 +53,7 @@ const HomeScreen = ({ navigation }) => {
     useEffect(() => {
         fetchData();
         //setRefreshing(true)
-        //FileSystem.deleteAsync("file:///var/mobile/Containers/Data/Application/BF6A6909-E7D6-43BF-B1A8-6B889C449760/Documents/ExponentExperienceData/@anonymous/wander-9a435468-88e0-4184-9994-838bf35b42ee/tripData.json", { idempotent: true });
+        //FileSystem.deleteAsync("file:///var/mobile/Containers/Data/Application/BF6A6909-E7D6-43BF-B1A8-6B889C449760/Documents/ExponentExperienceData/@anonymous/wander-610cafdc-e82e-4965-b0c5-8ccbe83c6a4f/tripData.json", { idempotent: true });
 
 
       }, []); // Dependency on tripData to trigger re-render

@@ -309,6 +309,15 @@ const MapStack = ({ navigation }) => {
                 }}
             />
             <Stack.Screen
+                name="SearchScreen"
+                component={SearchScreen}
+                options={{
+                    headerShown: false,
+                    presentation: 'transparentModal',
+                    animation: 'fade'
+                }}
+            />
+            <Stack.Screen
                 name="DetailScreen"
                 component={DetailScreenTwo}
                 options={{
